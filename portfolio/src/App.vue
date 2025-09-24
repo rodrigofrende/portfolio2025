@@ -273,6 +273,7 @@ const handleMouseMove = (e: MouseEvent) => {
   }
 }
 
+
 const startFloatingAnimation = () => {
   const animate = () => {
     updateFloatingElements()
@@ -521,15 +522,10 @@ onUnmounted(() => {
             <!-- Floating Particles -->
             <div class="floating-particles">
               <div 
-                v-for="i in 15" 
+                v-for="(style, i) in particleStyles" 
                 :key="i"
                 class="particle"
-                :style="{
-                  left: Math.random() * 100 + '%',
-                  top: Math.random() * 100 + '%',
-                  animationDelay: Math.random() * 10 + 's',
-                  animationDuration: (15 + Math.random() * 10) + 's'
-                }"
+                :style="style"
               ></div>
             </div>
           </div>
