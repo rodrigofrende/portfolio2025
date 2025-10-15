@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
+import NameTransition from './components/NameTransition.vue'
 
 // Reactive data
 const isScrolled = ref(false)
@@ -587,6 +588,15 @@ onUnmounted(() => {
       </div>
     </div>
 
+    <!-- Name Transition Animation -->
+    <div class="name-transition-section">
+      <NameTransition 
+        textSize="medium" 
+        :showHighlight="true" 
+        :speed="120" 
+      />
+    </div>
+
     <!-- About Section -->
     <section id="about" class="about-section">
       <div class="container">
@@ -1159,6 +1169,17 @@ onUnmounted(() => {
   width: 100%;
   background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
   padding: 2rem 0;
+}
+
+/* Name Transition Section */
+.name-transition-section {
+  background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+  padding: 3rem 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
 }
 
 /* Code Terminal */
