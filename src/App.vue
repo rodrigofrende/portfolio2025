@@ -1,10 +1,15 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
-import NameTransition from './components/NameTransition.vue'
+import { ref, onMounted, onUnmounted, computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+import HeroSection from './components/HeroSection.vue'
+import CustomCursor from './components/CustomCursor.vue'
+import ScrollReveal from './components/ScrollReveal.vue'
+import ModernHeader from './components/ModernHeader.vue'
+import ScrollToTop from './components/ScrollToTop.vue'
+
+const { t } = useI18n()
 
 // Reactive data
-const isScrolled = ref(false)
-const mobileMenuOpen = ref(false)
 const currentRole = ref('')
 const currentCodeLine = ref('')
 const roles = [ 'Frontend Developer', 'UI/UX Designer', 'Tech Enthusiast', '3D Maker',]
@@ -63,78 +68,25 @@ const typingMessages = [
 let textId = 0
 let tagId = 0
 
-// Tech stack data for showcase
-const techStack = ref([
-  { name: "Vue.js", icon: "V", level: "Expert", progress: 90, category: "framework" },
-  { name: "TypeScript", icon: "TS", level: "Advanced", progress: 85, category: "language" },
-  { name: "React", icon: "R", level: "Advanced", progress: 80, category: "framework" },
-  { name: "JavaScript", icon: "JS", level: "Expert", progress: 95, category: "language" },
-  { name: "CSS3", icon: "CSS", level: "Expert", progress: 90, category: "style" },
-  { name: "Node.js", icon: "N", level: "Intermediate", progress: 70, category: "backend" },
-  { name: "Tailwind", icon: "T", level: "Expert", progress: 88, category: "style" },
-  { name: "Azure", icon: "A", level: "Intermediate", progress: 75, category: "cloud" },
-  { name: "AWS", icon: "A", level: "Intermediate", progress: 72, category: "cloud" },
-  { name: "Git", icon: "G", level: "Expert", progress: 92, category: "tool" },
-  { name: "Figma", icon: "F", level: "Advanced", progress: 82, category: "design" },
-  { name: "Vite", icon: "V", level: "Advanced", progress: 85, category: "tool" }
-])
+// Tech stack data moved to HeroSection component
 
-// Sample projects data
-const projects = ref([
-  {
-    id: 1,
-    title: "E-commerce Platform",
-    description: "Plataforma de comercio electrónico moderna construida con Vue.js y TypeScript.",
-    technologies: ["Vue.js", "TypeScript", "Tailwind CSS"],
-    github: "https://github.com/tu-usuario/ecommerce-platform",
-    demo: "https://demo-ecommerce.com",
-    icon: "🛒"
-  },
-  {
-    id: 2,
-    title: "Task Management App",
-    description: "Aplicación de gestión de tareas con drag & drop y colaboración en tiempo real.",
-    technologies: ["React", "Node.js", "Socket.io"],
-    github: "https://github.com/tu-usuario/task-manager",
-    demo: "https://demo-tasks.com",
-    icon: "📋"
-  },
-  {
-    id: 3,
-    title: "Weather Dashboard",
-    description: "Dashboard meteorológico con visualizaciones interactivas y pronósticos detallados.",
-    technologies: ["Vue.js", "Chart.js", "API Integration"],
-    github: "https://github.com/tu-usuario/weather-dashboard",
-    demo: "https://demo-weather.com",
-    icon: "🌤️"
-  },
-  {
-    id: 4,
-    title: "Portfolio Website",
-    description: "Sitio web personal con diseño responsive y animaciones fluidas.",
-    technologies: ["Vue.js", "CSS3", "GSAP"],
-    github: "https://github.com/tu-usuario/portfolio",
-    demo: "https://tu-portfolio.com",
-    icon: "💼"
-  }
-])
+// Sample projects data - translated
+const projects = computed(() => {
+  const projectItems = t('projects.items')
+  if (!Array.isArray(projectItems)) return []
+  
+  return projectItems.map((item: any, index: number) => ({
+    id: index + 1,
+    title: item.title,
+    description: item.description,
+    technologies: item.technologies,
+    github: `https://github.com/tu-usuario/proyecto-${index + 1}`,
+    demo: `https://demo-proyecto-${index + 1}.com`,
+    icon: ['🛒', '📋', '🌤️', '💼'][index]
+  }))
+})
 
-// Methods
-const handleScroll = () => {
-  isScrolled.value = window.scrollY > 50
-}
-
-const scrollToSection = (sectionId: string) => {
-  const element = document.getElementById(sectionId)
-  if (element) {
-    element.scrollIntoView({ behavior: 'smooth' })
-  }
-  mobileMenuOpen.value = false
-}
-
-const toggleMobileMenu = () => {
-  mobileMenuOpen.value = !mobileMenuOpen.value
-}
+// Navigation methods moved to ModernHeader component
 
 // Typing animations
 const typeRole = () => {
@@ -370,24 +322,7 @@ const startAnimation = () => {
   animate()
 }
 
-// Optimized SVG icons for tech stack
-const getTechIcon = (techName: string) => {
-  const icons: Record<string, string> = {
-    'Vue.js': '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M24,1.61H14.06L12,5.16,9.94,1.61H0L12,22.39ZM12,14.08,5.16,2.23H9.59L12,6.41l2.41-4.18h4.43Z"/></svg>',
-    'TypeScript': '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M1.125 0C.502 0 0 .502 0 1.125v21.75C0 23.498.502 24 1.125 24h21.75c.623 0 1.125-.502 1.125-1.125V1.125C24 .502 23.498 0 22.875 0zm17.363 9.75c.612 0 1.154.037 1.627.111a6.38 6.38 0 0 1 1.306.34v2.458a3.95 3.95 0 0 0-.643-.361 5.093 5.093 0 0 0-.717-.26 5.453 5.453 0 0 0-1.426-.2c-.3 0-.573.028-.819.086a2.1 2.1 0 0 0-.623.242c-.17.104-.3.229-.393.374a.888.888 0 0 0-.14.49c0 .196.053.373.156.529.104.156.252.304.443.444s.423.276.696.41c.273.135.582.274.926.416.47.197.892.407 1.266.628.374.222.695.473.963.753.268.279.472.598.614.957.142.359.214.776.214 1.253 0 .657-.125 1.21-.373 1.656a3.033 3.033 0 0 1-1.012 1.085 4.38 4.38 0 0 1-1.487.596c-.566.12-1.163.18-1.79.18a9.916 9.916 0 0 1-1.84-.164 5.544 5.544 0 0 1-1.512-.493v-2.63a5.033 5.033 0 0 0 3.237 1.2c.333 0 .624-.03.872-.09.249-.06.456-.144.623-.25.166-.108.29-.234.373-.38a1.023 1.023 0 0 0-.074-1.089 2.12 2.12 0 0 0-.537-.5 5.597 5.597 0 0 0-.807-.444 27.72 27.72 0 0 0-1.007-.436c-.918-.383-1.602-.852-2.053-1.405-.45-.553-.676-1.222-.676-2.005 0-.614.123-1.141.369-1.582.246-.441.58-.804 1.004-1.089a4.494 4.494 0 0 1 1.47-.629 7.536 7.536 0 0 1 1.77-.201zm-15.113.188h9.563v2.166H9.506v9.646H6.789v-9.646H3.375z"/></svg>',
-    'React': '<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="2" fill="#61dafb"/><path d="M12 2c-2.5 0-4.8 1.2-6.2 3.2-1.4 2-1.4 4.6 0 6.6 1.4 2 3.7 3.2 6.2 3.2s4.8-1.2 6.2-3.2c1.4-2 1.4-4.6 0-6.6C16.8 3.2 14.5 2 12 2zm0 2c1.8 0 3.4 1 4.3 2.5.9 1.5.9 3.5 0 5-0.9 1.5-2.5 2.5-4.3 2.5s-3.4-1-4.3-2.5c-0.9-1.5-0.9-3.5 0-5C8.6 5 10.2 4 12 4z" fill="#61dafb"/><path d="M12 8c-2.2 0-4 1.8-4 4s1.8 4 4 4 4-1.8 4-4-1.8-4-4-4zm0 2c1.1 0 2 0.9 2 2s-0.9 2-2 2-2-0.9-2-2 0.9-2 2-2z" fill="#61dafb"/></svg>',
-    'JavaScript': '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M0 0h24v24H0V0zm22.034 18.276c-.175-1.095-.888-2.015-3.003-2.873-.736-.345-1.554-.585-1.797-1.14-.091-.33-.105-.51-.046-.705.15-.646.915-.84 1.515-.66.39.12.75.42.976.9 1.034-.676 1.034-.676 1.755-1.125-.27-.42-.404-.601-.586-.78-.63-.705-1.469-1.065-2.834-1.034l-.705.089c-.676.165-1.32.525-1.71 1.005-1.14 1.291-.811 3.541.569 4.471 1.365 1.02 3.361 1.244 3.616 2.205.24 1.17-.87 1.545-1.966 1.41-.811-.18-1.26-.586-1.755-1.336l-1.83 1.051c.21.48.45.689.81 1.109 1.74 1.756 6.09 1.666 6.871-1.004.029-.09.24-.705.074-1.65l.046.067zm-8.983-7.245h-2.248c0 1.938-.009 3.864-.009 5.805 0 1.232.063 2.363-.138 2.711-.33.689-1.18.601-1.566.48-.396-.196-.597-.466-.83-.855-.063-.105-.11-.196-.127-.196l-1.825 1.125c.305.63.75 1.172 1.324 1.517.855.51 2.004.675 3.207.405.783-.226 1.458-.691 1.811-1.411.51-.93.402-2.07.397-3.346.012-2.054 0-4.109 0-6.179l.004-.056z"/></svg>',
-    'CSS3': '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M1.5 0h21l-1.91 21.563L11.977 24l-8.564-2.438L1.5 0zm7.031 9.75l-.232-2.718 10.059.003.23-2.622L5.412 4.41l.698 8.01h9.126l-.326 3.426-2.91.804-2.955-.81-.188-2.11H6.248l.33 4.171L12 19.351l5.379-1.443.744-8.157H8.531z"/></svg>',
-    'Node.js': '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.998,24c-0.321,0-0.641-0.084-0.922-0.247l-2.936-1.737c-0.438-0.245-0.224-0.332-0.080-0.383 c0.585-0.203,0.703-0.250,1.328-0.604c0.065-0.037,0.151-0.023,0.218,0.017l2.256,1.339c0.082,0.045,0.197,0.045,0.272,0l8.795-5.076 c0.082-0.047,0.134-0.141,0.134-0.238V6.921c0-0.099-0.053-0.192-0.137-0.242l-8.791-5.072c-0.081-0.047-0.189-0.047-0.271,0 L3.075,6.68C2.990,6.729,2.936,6.825,2.936,6.921v10.15c0,0.097,0.054,0.189,0.139,0.235l2.409,1.392 c1.307,0.654,2.108-0.116,2.108-0.89V7.787c0-0.142,0.114-0.253,0.256-0.253h1.115c0.139,0,0.255,0.112,0.255,0.253v10.021 c0,1.745-0.95,2.745-2.604,2.745c-0.508,0-0.909,0-2.026-0.551L2.28,18.675c-0.57-0.329-0.922-0.945-0.922-1.604V6.921 c0-0.659,0.353-1.275,0.922-1.603l8.795-5.082c0.557-0.315,1.296-0.315,1.848,0l8.794,5.082c0.570,0.329,0.924,0.944,0.924,1.603 v10.15c0,0.659-0.354,1.273-0.924,1.604l-8.794,5.078C12.643,23.916,12.324,24,11.998,24z M19.099,13.993 c0-1.9-1.284-2.406-3.987-2.763c-2.731-0.361-3.009-0.548-3.009-1.187c0-0.528,0.235-1.233,2.258-1.233 c1.807,0,2.473,0.389,2.747,1.607c0.024,0.115,0.129,0.199,0.247,0.199h1.141c0.071,0,0.138-0.031,0.186-0.081 c0.048-0.054,0.074-0.123,0.067-0.196c-0.177-2.098-1.571-3.076-4.388-3.076c-2.508,0-4.004,1.058-4.004,2.833 c0,1.925,1.488,2.457,3.895,2.695c2.88,0.282,3.103,0.703,3.103,1.269c0,0.983-0.789,1.402-2.642,1.402 c-2.327,0-2.839-0.584-3.011-1.742c-0.02-0.124-0.126-0.215-0.253-0.215h-1.137c-0.141,0-0.254,0.112-0.254,0.253 c0,1.482,0.806,3.248,4.655,3.248C17.501,17.007,19.099,15.91,19.099,13.993z"/></svg>',
-    'Tailwind': '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.001,4.8c-3.2,0-5.2,1.6-6,4.8c1.2-1.6,2.6-2.2,4.2-1.8c0.913,0.228,1.565,0.89,2.288,1.624 C13.666,10.618,15.027,12,18.001,12c3.2,0,5.2-1.6,6-4.8c-1.2,1.6-2.6,2.2-4.2,1.8c-0.913-0.228-1.565-0.89-2.288-1.624 C16.337,6.182,14.976,4.8,12.001,4.8z M6.001,12c-3.2,0-5.2,1.6-6,4.8c1.2-1.6,2.6-2.2,4.2-1.8c0.913,0.228,1.565,0.89,2.288,1.624 c1.177,1.194,2.538,2.576,5.512,2.576c3.2,0,5.2-1.6,6-4.8c-1.2,1.6-2.6,2.2-4.2,1.8c-0.913-0.228-1.565-0.89-2.288-1.624 C10.337,13.382,8.976,12,6.001,12z"/></svg>',
-    'Azure': '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 4h18l-3 6h-12l3-6zM6 10h12l-3 6h-6l-3-6z" fill="#0078d4"/><path d="M9 16h6l-3 4h-6l3-4z" fill="#0078d4"/></svg>',
-    'AWS': '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2c5.5 0 10 4.5 10 10s-4.5 10-10 10S2 17.5 2 12 6.5 2 12 2zm0 2c-4.4 0-8 3.6-8 8s3.6 8 8 8 8-3.6 8-8-3.6-8-8-8z" fill="none" stroke="currentColor" stroke-width="0.8"/><text x="12" y="9" font-family="Arial, sans-serif" font-size="3.5" font-weight="bold" text-anchor="middle" fill="currentColor">aws</text><path d="M8 13c0.5-0.5 1.2-1 2-1s1.5 0.5 2 1" fill="none" stroke="#ff9900" stroke-width="1"/></svg>',
-    'Git': '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.546 10.93L13.067.452c-.604-.603-1.582-.603-2.188 0L8.708 2.627l2.76 2.76c.645-.215 1.379-.07 1.889.441.516.515.658 1.258.438 1.9l2.658 2.66c.645-.223 1.387-.078 1.9.435.721.72.721 1.884 0 2.604-.719.719-1.881.719-2.6 0-.539-.541-.674-1.337-.404-1.996L12.86 8.955v6.525c.176.086.342.203.488.348.713.721.713 1.883 0 2.6-.719.721-1.889.721-2.609 0-.719-.719-.719-1.879 0-2.598.182-.18.387-.316.605-.406V8.835c-.218-.091-.423-.222-.6-.401-.545-.545-.676-1.342-.396-2.009L7.636 3.7.45 10.881c-.6.605-.6 1.584 0 2.189l10.48 10.477c.604.604 1.582.604 2.186 0l10.43-10.43c.605-.603.605-1.582 0-2.187"/></svg>',
-    'Figma': '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h6v6H6V6zm6 0h6v6h-6V6zm-6 6h6v6H6v-6zm6 0h6v6h-6v-6z" fill="#f24e1e"/><path d="M12 6h6v6h-6V6z" fill="#a259ff"/><path d="M6 12h6v6H6v-6z" fill="#ff7262"/><path d="M12 12h6v6h-6v-6z" fill="#1abcf0"/><path d="M6 6h6v6H6V6z" fill="#0acf83"/></svg>',
-    'Vite': '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 7l10 5 10-5-10-5z" fill="#646cff"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5" fill="#646cff"/></svg>'
-  }
-  return icons[techName] || `<span class="icon-text">${techName.charAt(0)}</span>`
-}
+// getTechIcon function moved to HeroSection component
 
 
 
@@ -415,7 +350,6 @@ const addMagneticEffect = () => {
 
 // Lifecycle
 onMounted(() => {
-  window.addEventListener('scroll', handleScroll)
   window.addEventListener('mousemove', handleMouseMove)
   
   // Generate particle styles once
@@ -441,7 +375,6 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
-  window.removeEventListener('scroll', handleScroll)
   window.removeEventListener('mousemove', handleMouseMove)
   if (roleInterval !== undefined) clearInterval(roleInterval)
   if (codeInterval !== undefined) clearInterval(codeInterval)
@@ -450,122 +383,14 @@ onUnmounted(() => {
 
 <template>
   <div id="app">
-    <!-- Navigation -->
-    <nav class="navbar" :class="{ 'navbar-scrolled': isScrolled }">
-      <div class="nav-container">
-        <div class="nav-logo">
-          <span class="logo-text">Portfolio</span>
-        </div>
-        <ul class="nav-menu" :class="{ 'nav-menu-active': mobileMenuOpen }">
-          <li class="nav-item">
-            <a href="#home" @click="scrollToSection('home')" class="nav-link">Home</a>
-          </li>
-          <li class="nav-item">
-            <a href="#about" @click="scrollToSection('about')" class="nav-link">About</a>
-          </li>
-          <li class="nav-item">
-            <a href="#projects" @click="scrollToSection('projects')" class="nav-link">Projects</a>
-          </li>
-          <li class="nav-item">
-            <a href="#contact" @click="scrollToSection('contact')" class="nav-link">Contact</a>
-          </li>
-        </ul>
-        <div class="nav-toggle" @click="toggleMobileMenu">
-          <span class="bar"></span>
-          <span class="bar"></span>
-          <span class="bar"></span>
-        </div>
-      </div>
-    </nav>
+    <!-- Custom Cursor -->
+    <CustomCursor />
+    
+    <!-- Modern Header -->
+    <ModernHeader />
 
-    <!-- Home Section -->
-    <section id="home" class="home-section">
-      <!-- Animated Background -->
-      <div class="animated-bg">
-        <div class="bg-shapes">
-          <div class="shape shape-1"></div>
-          <div class="shape shape-2"></div>
-          <div class="shape shape-3"></div>
-          <div class="shape shape-4"></div>
-          <div class="shape shape-5"></div>
-        </div>
-        <div class="particles">
-          <div v-for="(style, i) in particleStyles" :key="i" class="particle" :style="style"></div>
-        </div>
-      </div>
-
-      <div class="hero-content">
-        <div class="hero-text">
-          <div class="greeting-text">
-            <span class="greeting">Hello! 👋</span>
-          </div>
-          <h1 class="hero-title">
-            <span class="title-line typing-animation">I'm</span>
-            <span class="title-name glitch-text" data-text="Rodrigo Frende">Rodrigo Frende</span>
-            <div class="title-role-container">
-              <span class="title-role typing-role">{{ currentRole }}</span>
-              <span class="cursor">|</span>
-            </div>
-          </h1>
-          <p class="hero-description">
-            <span class="highlight-text">Frontend Developer</span> passionate about creating 
-            <span class="highlight-text">digital experiences</span> that make a difference.
-            Specialized in modern technologies and innovative design.
-          </p>
-          <div class="hero-buttons">
-            <button class="btn-primary magnetic-btn" @click="scrollToSection('projects')">
-              <span class="btn-text">View Projects</span>
-              <div class="btn-shine"></div>
-            </button>
-            <button class="btn-secondary magnetic-btn" @click="scrollToSection('contact')">
-              <span class="btn-text">Contact</span>
-              <div class="btn-shine"></div>
-            </button>
-          </div>
-        </div>
-        
-        <div class="hero-visual">
-          <!-- Modern Tech Showcase -->
-          <div class="tech-showcase">
-            <div class="showcase-header">
-              <h3 class="showcase-title">Tech Stack</h3>
-              <div class="showcase-subtitle">Technologies I work with</div>
-            </div>
-            
-            <div class="tech-grid">
-              <div class="tech-item" v-for="(tech, index) in techStack" :key="tech.name" :style="{ '--delay': index * 0.1 + 's' }">
-                <div class="tech-header">
-                  <div class="tech-icon">
-                    <div class="icon-wrapper" :class="tech.category">
-                      <div class="tech-svg-icon" v-html="getTechIcon(tech.name)"></div>
-                    </div>
-                  </div>
-                  <div class="level-indicator">
-                    <div class="level-bars" :style="{ '--level': tech.progress + '%' }">
-                      <div class="bar bar-1"></div>
-                      <div class="bar bar-2"></div>
-                      <div class="bar bar-3"></div>
-                    </div>
-                  </div>
-                </div>
-                <div class="tech-info">
-                  <span class="tech-name">{{ tech.name }}</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Enhanced Scroll Indicator -->
-      <div class="scroll-indicator">
-        <div class="scroll-text">Scroll</div>
-        <div class="scroll-arrow">
-          <div class="arrow-line"></div>
-          <div class="arrow-head"></div>
-        </div>
-      </div>
-    </section>
+    <!-- New Hero Section -->
+    <HeroSection id="home" />
 
     <!-- Terminal Transition Element -->
     <div class="terminal-transition">
@@ -588,73 +413,60 @@ onUnmounted(() => {
       </div>
     </div>
 
-    <!-- Name Transition Animation -->
-    <div class="name-transition-section">
-      <NameTransition 
-        textSize="medium" 
-        :showHighlight="true" 
-        :speed="120" 
-      />
-    </div>
-
     <!-- About Section -->
-    <section id="about" class="about-section">
-      <div class="container">
-        <h2 class="section-title">About Me</h2>
+    <ScrollReveal :delay="100">
+      <section id="about" class="about-section">
+        <div class="container">
+          <h2 class="section-title">{{ t('about.title') }}</h2>
         <div class="about-content">
           <div class="about-text">
             <div class="about-intro">
-              <h3>My Story</h3>
-              <p>
-                I'm a frontend developer passionate about creating digital experiences 
-                that make a difference. With over X years of experience in web development, 
-                I specialize in modern technologies like Vue.js, React, TypeScript 
-                and responsive design.
-              </p>
+              <h3>{{ t('about.myStory') }}</h3>
+              <p>{{ t('about.intro') }}</p>
             </div>
             <div class="skills-grid">
               <div class="skill-category">
-                <h4>Frontend</h4>
+                <h4>{{ t('about.skills.frontend.title') }}</h4>
                 <ul>
-                  <li>Vue.js / React</li>
-                  <li>TypeScript / JavaScript</li>
-                  <li>HTML5 / CSS3</li>
-                  <li>Tailwind CSS</li>
+                  <li v-for="(item, index) in t('about.skills.frontend.items')" :key="index">
+                    {{ item }}
+                  </li>
                 </ul>
               </div>
               <div class="skill-category">
-                <h4>Tools</h4>
+                <h4>{{ t('about.skills.tools.title') }}</h4>
                 <ul>
-                  <li>Git / GitHub</li>
-                  <li>Vite / Webpack</li>
-                  <li>Figma / Adobe XD</li>
-                  <li>VS Code</li>
+                  <li v-for="(item, index) in t('about.skills.tools.items')" :key="index">
+                    {{ item }}
+                  </li>
                 </ul>
               </div>
             </div>
           </div>
           <div class="about-stats">
             <div class="stat-item">
-              <div class="stat-number">50+</div>
-              <div class="stat-label">Projects</div>
+              <div class="stat-number">{{ t('about.stats.projects.number') }}</div>
+              <div class="stat-label">{{ t('about.stats.projects.label') }}</div>
             </div>
             <div class="stat-item">
-              <div class="stat-number">3+</div>
-              <div class="stat-label">Years</div>
+              <div class="stat-number">{{ t('about.stats.years.number') }}</div>
+              <div class="stat-label">{{ t('about.stats.years.label') }}</div>
             </div>
             <div class="stat-item">
-              <div class="stat-number">100%</div>
-              <div class="stat-label">Dedication</div>
+              <div class="stat-number">{{ t('about.stats.dedication.number') }}</div>
+              <div class="stat-label">{{ t('about.stats.dedication.label') }}</div>
             </div>
           </div>
         </div>
       </div>
     </section>
+    </ScrollReveal>
 
     <!-- Projects Section -->
-    <section id="projects" class="projects-section">
-      <div class="container">
-        <h2 class="section-title">My Projects</h2>
+    <ScrollReveal :delay="150">
+      <section id="projects" class="projects-section">
+        <div class="container">
+          <h2 class="section-title">{{ t('projects.title') }}</h2>
         <div class="projects-grid">
           <div class="project-card" v-for="project in projects" :key="project.id">
             <div class="project-image">
@@ -672,13 +484,13 @@ onUnmounted(() => {
               </div>
               <div class="project-links">
                 <a :href="project.github" target="_blank" class="project-link">
-                  <span>GitHub</span>
+                  <span>{{ t('projects.links.github') }}</span>
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                     <path d="M7 17L17 7M17 7H7M17 7V17"/>
                   </svg>
                 </a>
                 <a v-if="project.demo" :href="project.demo" target="_blank" class="project-link">
-                  <span>Demo</span>
+                  <span>{{ t('projects.links.demo') }}</span>
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                     <path d="M7 17L17 7M17 7H7M17 7V17"/>
                   </svg>
@@ -689,30 +501,29 @@ onUnmounted(() => {
         </div>
       </div>
     </section>
+    </ScrollReveal>
 
     <!-- Contact Section -->
-    <footer id="contact" class="contact-section">
-      <div class="container">
-        <h2 class="section-title">Contact</h2>
+    <ScrollReveal :delay="200">
+      <footer id="contact" class="contact-section">
+        <div class="container">
+          <h2 class="section-title">{{ t('contact.title') }}</h2>
         <div class="contact-content">
           <div class="contact-info">
-            <h3>Let's work together!</h3>
-            <p>
-              I'm always interested in new projects and opportunities. 
-              Don't hesitate to contact me if you have any ideas in mind.
-            </p>
+            <h3>{{ t('contact.heading') }}</h3>
+            <p>{{ t('contact.description') }}</p>
             <div class="contact-methods">
               <a href="mailto:rodrigo.frende@gmail.com" class="contact-method">
                 <div class="method-icon">📧</div>
                 <div class="method-info">
-                  <span class="method-label">Email</span>
-                  <span class="method-value">rodrigo.frende@gmail.com</span>
+                  <span class="method-label">{{ t('contact.email.label') }}</span>
+                  <span class="method-value">{{ t('contact.email.value') }}</span>
                 </div>
               </a>
             </div>
           </div>
           <div class="social-links">
-            <h3>My Networks</h3>
+            <h3>{{ t('contact.social.title') }}</h3>
             <div class="social-grid">
               <a href="https://github.com/rodrigofrende" target="_blank" class="social-link">
                 <div class="social-icon">
@@ -720,7 +531,7 @@ onUnmounted(() => {
                     <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
                   </svg>
                 </div>
-                <span>GitHub</span>
+                <span>{{ t('contact.social.github') }}</span>
               </a>
               <a href="https://linkedin.com/in/rodrigofrende" target="_blank" class="social-link">
                 <div class="social-icon">
@@ -728,7 +539,7 @@ onUnmounted(() => {
                     <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
                   </svg>
                 </div>
-                <span>LinkedIn</span>
+                <span>{{ t('contact.social.linkedin') }}</span>
               </a>
               <a href="https://instagram.com/rf.3d.prints" target="_blank" class="social-link">
                 <div class="social-icon">
@@ -736,16 +547,20 @@ onUnmounted(() => {
                     <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
                   </svg>
                 </div>
-                <span>Instagram</span>
+                <span>{{ t('contact.social.instagram') }}</span>
               </a>
             </div>
           </div>
         </div>
         <div class="footer-bottom">
-          <p>&copy; {{ new Date().getFullYear() }} Rodrigo Frende. All rights reserved.</p>
+          <p>&copy; {{ new Date().getFullYear() }} {{ t('contact.footer.rights') }}</p>
         </div>
       </div>
     </footer>
+    </ScrollReveal>
+
+    <!-- Scroll to Top Button -->
+    <ScrollToTop />
   </div>
 </template>
 
@@ -769,88 +584,7 @@ onUnmounted(() => {
   padding: 0 20px;
 }
 
-/* Navigation */
-.navbar {
-  position: fixed;
-  top: 0;
-  width: 100%;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
-  z-index: 1000;
-  transition: all 0.3s ease;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-}
-
-.navbar-scrolled {
-  background: rgba(255, 255, 255, 0.98);
-  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
-}
-
-.nav-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 20px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  height: 70px;
-}
-
-.nav-logo .logo-text {
-  font-size: 1.5rem;
-  font-weight: 700;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.nav-menu {
-  display: flex;
-  list-style: none;
-  gap: 2rem;
-}
-
-.nav-link {
-  text-decoration: none;
-  color: #333;
-  font-weight: 500;
-  transition: color 0.3s ease;
-  position: relative;
-}
-
-.nav-link:hover {
-  color: #667eea;
-}
-
-.nav-link::after {
-  content: '';
-  position: absolute;
-  width: 0;
-  height: 2px;
-  bottom: -5px;
-  left: 0;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  transition: width 0.3s ease;
-}
-
-.nav-link:hover::after {
-  width: 100%;
-}
-
-.nav-toggle {
-  display: none;
-  flex-direction: column;
-  cursor: pointer;
-}
-
-.bar {
-  width: 25px;
-  height: 3px;
-  background: #333;
-  margin: 3px 0;
-  transition: 0.3s;
-}
+/* Old navigation styles removed - using ModernHeader component */
 
 /* Home Section */
 .home-section {
@@ -1169,17 +903,6 @@ onUnmounted(() => {
   width: 100%;
   background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
   padding: 2rem 0;
-}
-
-/* Name Transition Section */
-.name-transition-section {
-  background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
-  padding: 3rem 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-  overflow: hidden;
 }
 
 /* Code Terminal */
@@ -2528,26 +2251,7 @@ onUnmounted(() => {
 }
 
 @media (max-width: 768px) {
-  .nav-menu {
-    position: fixed;
-    left: -100%;
-    top: 70px;
-    flex-direction: column;
-    background-color: white;
-    width: 100%;
-    text-align: center;
-    transition: 0.3s;
-    box-shadow: 0 10px 27px rgba(0, 0, 0, 0.05);
-    padding: 2rem 0;
-  }
-
-  .nav-menu-active {
-    left: 0;
-  }
-
-  .nav-toggle {
-    display: flex;
-  }
+  /* Mobile navigation handled by ModernHeader component */
 
   .hero-content {
     grid-template-columns: 1fr;
