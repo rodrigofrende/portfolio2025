@@ -34,41 +34,33 @@ const es = {
   },
   about: {
     title: 'Sobre Mí',
-    myStory: 'Mi Historia',
-    intro: 'Soy un desarrollador frontend apasionado por crear experiencias digitales que marquen la diferencia. Con más de X años de experiencia en desarrollo web, me especializo en tecnologías modernas como Vue.js, React, TypeScript y diseño responsive.',
-    skills: {
-      frontend: {
-        title: 'Frontend',
-        items: [
-          'Vue.js / React',
-          'TypeScript / JavaScript',
-          'HTML5 / CSS3',
-          'Tailwind CSS'
-        ] as const
-      },
-      tools: {
-        title: 'Herramientas',
-        items: [
-          'Git / GitHub',
-          'Vite / Webpack',
-          'Figma / Adobe XD',
-          'VS Code'
-        ] as const
-      }
+    headline: 'Desarrollador Frontend con pasión por crear experiencias digitales excepcionales',
+    intro: 'Soy Rodrigo, Frontend Developer especializado en Vue.js, React y TypeScript. Mi enfoque está en transformar ideas complejas en interfaces intuitivas y visualmente impactantes que los usuarios realmente disfrutan usar.',
+    journey: {
+      title: 'Mi Trayectoria',
+      text: 'Con más de 6 años de experiencia en desarrollo web, he trabajado tanto en software factories como en empresas de producto, abarcando proyectos muy diversos con clientes de distintos rubros. Desde plataformas de gestión deportiva hasta e-commerce de modelos 3D, este recorrido por todas las tecnologías web me ha enseñado a adaptarme rápidamente. Estoy en constante aprendizaje y mejora, siempre buscando nuevas formas de resolver problemas y crear mejores experiencias.'
     },
-    stats: {
-      projects: {
-        number: '50+',
-        label: 'Proyectos'
-      },
-      years: {
-        number: '3+',
-        label: 'Años'
-      },
-      dedication: {
-        number: '100%',
-        label: 'Dedicación'
-      }
+    approach: {
+      title: 'Mi Enfoque',
+      text: 'Creo firmemente en escribir código limpio, mantenible y performante. Me especializo en Vue.js y su ecosistema (Pinia, Vue Router, Vite), React, Firebase, y plataformas cloud como AWS y Azure. Trabajo con metodologías ágiles estilo SCRUM, me destaco en el armado de requisitos funcionales y tengo un ojo crítico para detectar posibles errores antes de que se conviertan en problemas. Cada proyecto es una oportunidad para aprender algo nuevo y superar expectativas.'
+    },
+    value: {
+      title: 'Qué Puedo Aportar',
+      items: [
+        'Desarrollo de aplicaciones web modernas con Vue.js/React y TypeScript',
+        'Despliegue e integración con AWS, Azure, Firebase y arquitecturas serverless',
+        'Diseño de interfaces responsivas con CSS3, Tailwind y animaciones fluidas',
+        'Trabajo con metodologías ágiles (SCRUM) y armado de requisitos funcionales',
+        'Optimización de rendimiento y mejores prácticas de accesibilidad (a11y)',
+        'Detección proactiva de errores y análisis crítico de arquitectura',
+        'Mentalidad orientada a resultados y atención al detalle'
+      ] as const
+    },
+    cv: {
+      title: 'Currículum',
+      download: 'Descargar CV',
+      spanish: 'Español',
+      english: 'English'
     }
   },
   projects: {

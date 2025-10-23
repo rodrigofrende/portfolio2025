@@ -9,14 +9,22 @@ const mouseX = ref(0)
 const mouseY = ref(0)
 const isLoaded = ref(false)
 
-// Pre-generate particles (static, won't re-render)
-const particles = Array.from({ length: 30 }, (_, i) => ({
-  id: i,
-  left: Math.random() * 100,
-  top: Math.random() * 100,
-  delay: Math.random() * 15,
-  duration: 15 + Math.random() * 10
-}))
+// Pre-generate particles with better distribution (static, won't re-render)
+const particles = Array.from({ length: 50 }, (_, i) => {
+  const types = ['float', 'twinkle', 'drift']
+  const type = types[Math.floor(Math.random() * types.length)]
+  
+  return {
+    id: i,
+    left: Math.random() * 100,
+    top: Math.random() * 100,
+    delay: Math.random() * 8, // Shorter delays
+    duration: 8 + Math.random() * 8, // Shorter durations (8-16s)
+    type: type,
+    size: 2 + Math.random() * 2, // Variable size (2-4px)
+    opacity: 0.3 + Math.random() * 0.5 // Variable opacity (0.3-0.8)
+  }
+})
 
 // Tech stack with icons
 const techStack = [
@@ -77,12 +85,16 @@ onUnmounted(() => {
         <div 
           class="particle" 
           v-for="particle in particles" 
-          :key="particle.id" 
+          :key="particle.id"
+          :class="`particle-${particle.type}`"
           :style="{ 
             left: `${particle.left}%`,
             top: `${particle.top}%`,
             animationDelay: `${particle.delay}s`,
-            animationDuration: `${particle.duration}s`
+            animationDuration: `${particle.duration}s`,
+            width: `${particle.size}px`,
+            height: `${particle.size}px`,
+            opacity: particle.opacity
           }"
         ></div>
       </div>
@@ -99,8 +111,8 @@ onUnmounted(() => {
         <span class="status-dot"></span>
         <span class="badge-label">{{ t('hero.badge') }}</span>
         <span class="badge-shine"></span>
-      </div>
-
+        </div>
+        
       <!-- Main headline -->
       <h1 class="hero-headline fade-in-up" style="animation-delay: 0.4s">
         <span class="headline-pre">{{ t('hero.greeting') }}</span>
@@ -109,30 +121,30 @@ onUnmounted(() => {
           <span class="headline-accent">{{ t('hero.titleAccent') }}</span>
           <span class="headline-highlight">{{ t('hero.titleHighlight') }}</span>
         </span>
-      </h1>
-
+        </h1>
+        
       <!-- CTA Buttons -->
       <div class="hero-actions fade-in-up" style="animation-delay: 0.8s">
         <button class="btn btn-primary magnetic" @click="scrollToSection('projects')">
           <span class="btn-content">
             <span class="btn-text">{{ t('hero.cta.viewWork') }}</span>
-            <svg class="btn-icon" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <svg class="btn-icon" width="20" height="20" viewBox="0 0 20 20" fill="none">
               <path d="M4 10h12m0 0l-4-4m4 4l-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
+                </svg>
           </span>
           <span class="btn-shimmer"></span>
-        </button>
+              </button>
         
         <button class="btn btn-secondary magnetic" @click="scrollToSection('contact')">
           <span class="btn-content">
             <span class="btn-text">{{ t('hero.cta.letsTalk') }}</span>
-            <svg class="btn-icon" width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <svg class="btn-icon" width="20" height="20" viewBox="0 0 24 24" fill="none">
               <path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
           </span>
           <span class="btn-shimmer"></span>
-        </button>
-      </div>
+              </button>
+        </div>
 
       <!-- Quick stats/highlights -->
       <div class="hero-stats fade-in-up" style="animation-delay: 1s">
@@ -141,9 +153,9 @@ onUnmounted(() => {
           <div class="stat-content">
             <div class="stat-number">{{ t('hero.stats.experience.number') }}</div>
             <div class="stat-label">{{ t('hero.stats.experience.label') }}</div>
-          </div>
+            </div>
         </div>
-        
+
         <div class="stat-divider"></div>
         
         <div class="stat-item">
@@ -153,7 +165,7 @@ onUnmounted(() => {
             <div class="stat-label">{{ t('hero.stats.projects.label') }}</div>
           </div>
         </div>
-        
+
         <div class="stat-divider"></div>
         
         <div class="stat-item">
@@ -161,9 +173,9 @@ onUnmounted(() => {
           <div class="stat-content">
             <div class="stat-number">{{ t('hero.stats.satisfaction.number') }}</div>
             <div class="stat-label">{{ t('hero.stats.satisfaction.label') }}</div>
+            </div>
           </div>
         </div>
-      </div>
 
       <!-- Tech stack preview -->
       <div class="tech-stack-preview fade-in-up" style="animation-delay: 1.2s">
@@ -172,7 +184,7 @@ onUnmounted(() => {
           <div class="tech-badge" v-for="tech in techStack" :key="tech.name">
             <span class="tech-dot" :style="{ background: tech.color }"></span>
             <span class="tech-name">{{ tech.name }}</span>
-          </div>
+            </div>
         </div>
       </div>
 
@@ -278,32 +290,73 @@ onUnmounted(() => {
   position: absolute;
   inset: 0;
   pointer-events: none;
+  overflow: hidden;
 }
 
 .particle {
   position: absolute;
-  width: 3px;
-  height: 3px;
-  background: rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.7);
   border-radius: 50%;
-  animation: particle-float 20s linear infinite;
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.4);
+  will-change: transform, opacity;
+}
+
+/* Floating animation - moves up */
+.particle-float {
+  animation: particle-float 12s ease-in-out infinite;
 }
 
 @keyframes particle-float {
   0% {
     transform: translateY(0) translateX(0);
-    opacity: 0;
   }
-  10% {
-    opacity: 1;
+  25% {
+    transform: translateY(-30vh) translateX(10px);
   }
-  90% {
-    opacity: 1;
+  50% {
+    transform: translateY(-60vh) translateX(-5px);
+  }
+  75% {
+    transform: translateY(-80vh) translateX(15px);
   }
   100% {
-    transform: translateY(-100vh) translateX(50px);
-    opacity: 0;
+    transform: translateY(-100vh) translateX(0);
+  }
+}
+
+/* Twinkling animation - stays in place */
+.particle-twinkle {
+  animation: particle-twinkle 4s ease-in-out infinite;
+}
+
+@keyframes particle-twinkle {
+  0%, 100% {
+    opacity: 0.4;
+    transform: scale(0.9);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.3);
+  }
+}
+
+/* Drifting animation - moves diagonally */
+.particle-drift {
+  animation: particle-drift 10s linear infinite;
+}
+
+@keyframes particle-drift {
+  0% {
+    transform: translate(0, 0);
+  }
+  33% {
+    transform: translate(30px, -40vh);
+  }
+  66% {
+    transform: translate(-20px, -70vh);
+  }
+  100% {
+    transform: translate(10px, -100vh);
   }
 }
 
@@ -336,7 +389,7 @@ onUnmounted(() => {
   z-index: 1;
   max-width: 1200px;
   width: 100%;
-  padding: 120px 40px 80px;
+  padding: 110px 40px 70px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -422,24 +475,24 @@ onUnmounted(() => {
    HERO HEADLINE
    =================================== */
 .hero-headline {
-  margin-bottom: 2rem;
+  margin-bottom: 2.5rem;
   max-width: 900px;
 }
 
 .headline-pre {
   display: block;
-  font-size: clamp(1.2rem, 2.5vw, 1.5rem);
+  font-size: clamp(1.1rem, 2.5vw, 1.4rem);
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.7);
-  margin-bottom: 1rem;
+  color: rgba(255, 255, 255, 0.75);
+  margin-bottom: 1.25rem;
   letter-spacing: 0.5px;
 }
 
 .headline-main {
   display: block;
-  font-size: clamp(2.5rem, 7vw, 5.5rem);
+  font-size: clamp(2.5rem, 7vw, 5rem);
   font-weight: 800;
-  line-height: 1.1;
+  line-height: 1.15;
   background: linear-gradient(
     135deg,
     #ffffff 0%,
@@ -466,15 +519,16 @@ onUnmounted(() => {
 
 .headline-accent {
   display: block;
-  font-size: clamp(1.5rem, 4vw, 2.5rem);
+  font-size: clamp(1.6rem, 4.5vw, 2.75rem);
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.8);
-  margin-top: 0.5rem;
+  color: rgba(255, 255, 255, 0.85);
+  margin-top: 0.75rem;
+  letter-spacing: 0.01em;
 }
 
 .headline-highlight {
   display: block;
-  font-size: clamp(2rem, 5.5vw, 4rem);
+  font-size: clamp(2.2rem, 6vw, 4.5rem);
   font-weight: 800;
   background: linear-gradient(
     135deg,
@@ -486,7 +540,9 @@ onUnmounted(() => {
   -webkit-text-fill-color: transparent;
   background-clip: text;
   position: relative;
-  padding-bottom: 0.2em;
+  padding-bottom: 0.25em;
+  margin-top: 0.125rem;
+  line-height: 1.2;
 }
 
 .headline-highlight::after {
@@ -495,7 +551,7 @@ onUnmounted(() => {
   bottom: 0;
   left: 50%;
   transform: translateX(-50%);
-  width: 60%;
+  width: 65%;
   height: 4px;
   background: linear-gradient(
     90deg,
@@ -511,10 +567,10 @@ onUnmounted(() => {
    =================================== */
 .hero-actions {
   display: flex;
-  gap: 1.25rem;
+  gap: 1rem;
   flex-wrap: wrap;
   justify-content: center;
-  margin-bottom: 4rem;
+  margin-bottom: 3.5rem;
 }
 
 .btn {
@@ -608,8 +664,8 @@ onUnmounted(() => {
 .hero-stats {
   display: flex;
   align-items: center;
-  gap: 2rem;
-  padding: 2rem 3rem;
+  gap: 2.5rem;
+  padding: 2.25rem 3rem;
   background: rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -671,15 +727,15 @@ onUnmounted(() => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1rem;
-  margin-bottom: 4rem;
+  gap: 1.25rem;
+  margin-bottom: 3rem;
 }
 
 .tech-label {
-  font-size: 0.75rem;
+  font-size: 0.6875rem;
   text-transform: uppercase;
-  letter-spacing: 1.5px;
-  color: rgba(255, 255, 255, 0.5);
+  letter-spacing: 2px;
+  color: rgba(255, 255, 255, 0.45);
   font-weight: 600;
 }
 
@@ -693,8 +749,8 @@ onUnmounted(() => {
 .tech-badge {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px 14px;
+  gap: 7px;
+  padding: 7px 13px;
   background: rgba(255, 255, 255, 0.08);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.15);
@@ -720,9 +776,10 @@ onUnmounted(() => {
 
 .tech-name {
   color: rgba(255, 255, 255, 0.9);
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
   font-weight: 600;
   white-space: nowrap;
+  letter-spacing: 0.01em;
 }
 
 /* ===================================
@@ -860,9 +917,9 @@ onUnmounted(() => {
 }
 
 .fade-in {
-  opacity: 0;
+    opacity: 0;
   animation: fade-in 0.8s ease forwards;
-}
+  }
 
 @keyframes fade-in {
   to {
@@ -897,7 +954,7 @@ onUnmounted(() => {
 /* Mobile */
 @media (max-width: 768px) {
   .hero-container {
-    padding: 90px 20px 50px;
+    padding: 100px 24px 60px;
   }
 
   .hero-badge {
@@ -905,55 +962,97 @@ onUnmounted(() => {
     padding: 8px 20px;
   }
 
+  .hero-headline {
+    margin-bottom: 2rem;
+  }
+
   .headline-pre {
-    margin-bottom: 0.75rem;
+    margin-bottom: 1rem;
+    font-size: 1rem;
+  }
+
+  .headline-main {
+    font-size: clamp(2.25rem, 9vw, 3.5rem) !important;
+    line-height: 1.2;
+  }
+
+  .headline-accent {
+    font-size: clamp(1.35rem, 5vw, 2rem) !important;
+    margin-top: 0.875rem;
+  }
+
+  .headline-highlight {
+    font-size: clamp(1.85rem, 7.5vw, 2.75rem) !important;
+    margin-top: 0.375rem;
   }
 
   .headline-highlight::after {
-    width: 80%;
+    width: 85%;
     height: 3px;
   }
 
   .hero-actions {
     flex-direction: column;
     width: 100%;
-    max-width: 400px;
-    gap: 1rem;
+    max-width: 100%;
+    gap: 0.875rem;
+    margin-bottom: 2.5rem;
   }
-
+  
   .btn {
     width: 100%;
-    padding: 14px 28px;
+    padding: 16px 28px;
+    font-size: 1rem;
+  }
+
+  .btn-content {
+    gap: 12px;
+  }
+
+  .btn-icon {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
   }
 
   .hero-stats {
     flex-direction: column;
     gap: 1.5rem;
-    padding: 2rem 1.5rem;
+    padding: 2rem 1.75rem;
     width: 100%;
-    max-width: 400px;
+    max-width: 100%;
+    margin-bottom: 2.5rem;
   }
-
+  
   .stat-item {
     width: 100%;
     justify-content: center;
   }
-
+  
   .stat-divider {
     width: 100%;
     height: 1px;
   }
 
   .tech-stack-preview {
-    margin-bottom: 3rem;
+    margin-bottom: 2.5rem;
+    padding: 0 16px;
+  }
+
+  .tech-label {
+    font-size: 0.625rem;
+    letter-spacing: 1.75px;
   }
 
   .tech-icons {
-    gap: 0.5rem;
+    gap: 0.625rem;
+    flex-wrap: wrap;
+    justify-content: center;
   }
-
+  
   .tech-badge {
-    padding: 6px 12px;
+    padding: 6px 11px;
+    gap: 6px;
   }
 
   .tech-dot {
@@ -962,7 +1061,7 @@ onUnmounted(() => {
   }
 
   .tech-name {
-    font-size: 0.8125rem;
+    font-size: 0.75rem;
   }
 
   /* Reduce orb sizes on mobile */
@@ -985,12 +1084,12 @@ onUnmounted(() => {
 /* Small mobile */
 @media (max-width: 480px) {
   .hero-container {
-    padding: 80px 16px 40px;
+    padding: 90px 20px 50px;
   }
-
+  
   .hero-badge {
     font-size: 0.75rem;
-    padding: 6px 16px;
+    padding: 7px 16px;
     gap: 8px;
   }
 
@@ -999,8 +1098,49 @@ onUnmounted(() => {
     height: 6px;
   }
 
+  .hero-headline {
+    margin-bottom: 1.75rem;
+  }
+
+  .headline-pre {
+    font-size: 0.9375rem;
+    margin-bottom: 0.875rem;
+  }
+
+  .headline-main {
+    font-size: clamp(2rem, 11vw, 2.75rem) !important;
+    line-height: 1.2;
+  }
+
+  .headline-accent {
+    font-size: clamp(1.25rem, 6vw, 1.65rem) !important;
+    margin-top: 0.75rem;
+  }
+
+  .headline-highlight {
+    font-size: clamp(1.65rem, 9vw, 2.25rem) !important;
+    margin-top: 0.375rem;
+  }
+
+  .hero-actions {
+    gap: 0.75rem;
+    margin-bottom: 2rem;
+  }
+
+  .btn {
+    font-size: 0.9375rem;
+    padding: 15px 24px;
+  }
+
+  .btn-icon {
+    width: 18px;
+    height: 18px;
+  }
+
   .hero-stats {
-    padding: 1.5rem 1rem;
+    padding: 1.875rem 1.5rem;
+    gap: 1.25rem;
+    margin-bottom: 2rem;
   }
 
   .stat-item {
@@ -1019,23 +1159,47 @@ onUnmounted(() => {
     font-size: 0.7rem;
   }
 
+  .tech-stack-preview {
+    margin-bottom: 2rem;
+  }
+
+  .tech-label {
+    font-size: 0.5625rem;
+    letter-spacing: 1.5px;
+  }
+
+  .tech-icons {
+    gap: 0.5rem;
+  }
+
   .tech-badge {
     padding: 5px 10px;
-    gap: 6px;
+    gap: 5px;
   }
 
   .tech-dot {
-    width: 6px;
-    height: 6px;
+    width: 5px;
+    height: 5px;
   }
 
   .tech-name {
-    font-size: 0.75rem;
+    font-size: 0.6875rem;
   }
 
-  .btn {
-    font-size: 0.9375rem;
-    padding: 13px 26px;
+  /* Reduce orb sizes more on small mobile */
+  .orb-1 {
+    width: 300px;
+    height: 300px;
+  }
+
+  .orb-2 {
+    width: 250px;
+    height: 250px;
+  }
+
+  .orb-3 {
+    width: 200px;
+    height: 200px;
   }
 }
 </style>

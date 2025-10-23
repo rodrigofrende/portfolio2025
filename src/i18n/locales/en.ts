@@ -34,41 +34,33 @@ const en = {
   },
   about: {
     title: 'About Me',
-    myStory: 'My Story',
-    intro: 'I\'m a frontend developer passionate about creating digital experiences that make a difference. With over X years of experience in web development, I specialize in modern technologies like Vue.js, React, TypeScript and responsive design.',
-    skills: {
-      frontend: {
-        title: 'Frontend',
-        items: [
-          'Vue.js / React',
-          'TypeScript / JavaScript',
-          'HTML5 / CSS3',
-          'Tailwind CSS'
-        ] as const
-      },
-      tools: {
-        title: 'Tools',
-        items: [
-          'Git / GitHub',
-          'Vite / Webpack',
-          'Figma / Adobe XD',
-          'VS Code'
-        ] as const
-      }
+    headline: 'Frontend Developer with a passion for creating exceptional digital experiences',
+    intro: 'I\'m Rodrigo, a Frontend Developer specialized in Vue.js, React, and TypeScript. My focus is on transforming complex ideas into intuitive and visually impactful interfaces that users truly enjoy using.',
+    journey: {
+      title: 'My Journey',
+      text: 'With over 6 years of experience in web development, I\'ve worked in both software factories and product companies, covering very diverse projects with clients from different industries. From sports management platforms to 3D model e-commerce, this journey through all web technologies has taught me to adapt quickly. I\'m constantly learning and improving, always seeking new ways to solve problems and create better experiences.'
     },
-    stats: {
-      projects: {
-        number: '50+',
-        label: 'Projects'
-      },
-      years: {
-        number: '3+',
-        label: 'Years'
-      },
-      dedication: {
-        number: '100%',
-        label: 'Dedication'
-      }
+    approach: {
+      title: 'My Approach',
+      text: 'I firmly believe in writing clean, maintainable, and performant code. I specialize in Vue.js and its ecosystem (Pinia, Vue Router, Vite), React, Firebase, and cloud platforms like AWS and Azure. I work with agile methodologies such as SCRUM, excel at building functional requirements, and have a critical eye for detecting potential issues before they become problems. Every project is an opportunity to learn something new and exceed expectations.'
+    },
+    value: {
+      title: 'What I Bring to the Table',
+      items: [
+        'Modern web application development with Vue.js/React and TypeScript',
+        'Deployment and integration with AWS, Azure, Firebase, and serverless architectures',
+        'Responsive interface design with CSS3, Tailwind, and smooth animations',
+        'Working with agile methodologies (SCRUM) and building functional requirements',
+        'Performance optimization and accessibility best practices (a11y)',
+        'Proactive error detection and critical architecture analysis',
+        'Results-oriented mindset and attention to detail'
+      ] as const
+    },
+    cv: {
+      title: 'Resume',
+      download: 'Download CV',
+      spanish: 'Spanish',
+      english: 'English'
     }
   },
   projects: {

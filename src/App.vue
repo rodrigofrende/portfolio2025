@@ -6,8 +6,9 @@ import CustomCursor from './components/CustomCursor.vue'
 import ScrollReveal from './components/ScrollReveal.vue'
 import ModernHeader from './components/ModernHeader.vue'
 import ScrollToTop from './components/ScrollToTop.vue'
+import { realProjects, getBestProjectImage } from './data/projects'
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 
 // Reactive data
 const currentRole = ref('')
@@ -70,20 +71,47 @@ let tagId = 0
 
 // Tech stack data moved to HeroSection component
 
-// Sample projects data - translated
+// Real projects data from GitHub repos
 const projects = computed(() => {
-  const projectItems = t('projects.items')
-  if (!Array.isArray(projectItems)) return []
-  
-  return projectItems.map((item: any, index: number) => ({
-    id: index + 1,
-    title: item.title,
-    description: item.description,
-    technologies: item.technologies,
-    github: `https://github.com/tu-usuario/proyecto-${index + 1}`,
-    demo: `https://demo-proyecto-${index + 1}.com`,
-    icon: ['🛒', '📋', '🌤️', '💼'][index]
+  return realProjects.map((project) => ({
+    ...project,
+    // Generate automatic screenshot URL
+    imageUrl: getBestProjectImage(project)
   }))
+})
+
+// About value items - handle i18n array properly
+const valueItems = computed(() => {
+  try {
+    // Try to get the items directly as an array
+    const items = t('about.value.items') as unknown
+    if (Array.isArray(items)) {
+      return items
+    }
+    // Fallback: return hardcoded messages based on current locale
+    const currentLocale = locale.value || 'es'
+    const messages = currentLocale === 'es' ? [
+      'Desarrollo de aplicaciones web modernas con Vue.js/React y TypeScript',
+      'Despliegue e integración con AWS, Azure, Firebase y arquitecturas serverless',
+      'Diseño de interfaces responsivas con CSS3, Tailwind y animaciones fluidas',
+      'Trabajo con metodologías ágiles (SCRUM) y armado de requisitos funcionales',
+      'Optimización de rendimiento y mejores prácticas de accesibilidad (a11y)',
+      'Detección proactiva de errores y análisis crítico de arquitectura',
+      'Mentalidad orientada a resultados y atención al detalle'
+    ] : [
+      'Modern web application development with Vue.js/React and TypeScript',
+      'Deployment and integration with AWS, Azure, Firebase, and serverless architectures',
+      'Responsive interface design with CSS3, Tailwind, and smooth animations',
+      'Working with agile methodologies (SCRUM) and building functional requirements',
+      'Performance optimization and accessibility best practices (a11y)',
+      'Proactive error detection and critical architecture analysis',
+      'Results-oriented mindset and attention to detail'
+    ]
+    return messages
+  } catch (error) {
+    console.error('Error loading value items:', error)
+    return []
+  }
 })
 
 // Navigation methods moved to ModernHeader component
@@ -418,48 +446,91 @@ onUnmounted(() => {
       <section id="about" class="about-section">
         <div class="container">
           <h2 class="section-title">{{ t('about.title') }}</h2>
-        <div class="about-content">
-          <div class="about-text">
-            <div class="about-intro">
-              <h3>{{ t('about.myStory') }}</h3>
-              <p>{{ t('about.intro') }}</p>
+          
+          <div class="about-grid">
+            <!-- Left Column: Introduction & Story -->
+            <div class="about-main">
+              <p class="about-headline">{{ t('about.headline') }}</p>
+              <p class="about-intro">{{ t('about.intro') }}</p>
+
+              <!-- Journey Card -->
+              <div class="about-card">
+                <div class="card-icon">🚀</div>
+                <h3 class="card-title">{{ t('about.journey.title') }}</h3>
+                <p class="card-text">{{ t('about.journey.text') }}</p>
+              </div>
+
+              <!-- Approach Card -->
+              <div class="about-card">
+                <div class="card-icon">💡</div>
+                <h3 class="card-title">{{ t('about.approach.title') }}</h3>
+                <p class="card-text">{{ t('about.approach.text') }}</p>
+              </div>
             </div>
-            <div class="skills-grid">
-              <div class="skill-category">
-                <h4>{{ t('about.skills.frontend.title') }}</h4>
-                <ul>
-                  <li v-for="(item, index) in t('about.skills.frontend.items')" :key="index">
-                    {{ item }}
+
+            <!-- Right Column: Skills & CV -->
+            <div class="about-sidebar">
+              <!-- Value Proposition Card -->
+              <div class="value-card">
+                <h3 class="value-title">{{ t('about.value.title') }}</h3>
+                <ul class="value-list">
+                  <li v-for="(item, index) in valueItems" :key="index" class="value-item">
+                    <svg class="check-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                      <polyline points="20 6 9 17 4 12"/>
+                    </svg>
+                    <span>{{ item }}</span>
                   </li>
                 </ul>
               </div>
-              <div class="skill-category">
-                <h4>{{ t('about.skills.tools.title') }}</h4>
-                <ul>
-                  <li v-for="(item, index) in t('about.skills.tools.items')" :key="index">
-                    {{ item }}
-                  </li>
-                </ul>
+
+              <!-- CV Download Card -->
+              <div class="cv-card">
+                <div class="cv-header">
+                  <svg class="cv-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                    <polyline points="14 2 14 8 20 8"/>
+                    <line x1="16" y1="13" x2="8" y2="13"/>
+                    <line x1="16" y1="17" x2="8" y2="17"/>
+                    <polyline points="10 9 9 9 8 9"/>
+                  </svg>
+                  <h3 class="cv-title">{{ t('about.cv.title') }}</h3>
+                </div>
+                <p class="cv-description">{{ t('about.cv.download') }}</p>
+                <div class="cv-buttons">
+                  <a 
+                    href="/CV2025-ES.pdf" 
+                    download="Rodrigo_Frende_CV_ES.pdf"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="cv-button cv-button-primary"
+                  >
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                      <polyline points="7 10 12 15 17 10"/>
+                      <line x1="12" y1="15" x2="12" y2="3"/>
+                    </svg>
+                    <span>{{ t('about.cv.spanish') }}</span>
+                  </a>
+                  <a 
+                    href="/CV2025-EN.pdf" 
+                    download="Rodrigo_Frende_CV_EN.pdf"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="cv-button cv-button-secondary"
+                  >
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                      <polyline points="7 10 12 15 17 10"/>
+                      <line x1="12" y1="15" x2="12" y2="3"/>
+                    </svg>
+                    <span>{{ t('about.cv.english') }}</span>
+                  </a>
+                </div>
               </div>
-            </div>
-          </div>
-          <div class="about-stats">
-            <div class="stat-item">
-              <div class="stat-number">{{ t('about.stats.projects.number') }}</div>
-              <div class="stat-label">{{ t('about.stats.projects.label') }}</div>
-            </div>
-            <div class="stat-item">
-              <div class="stat-number">{{ t('about.stats.years.number') }}</div>
-              <div class="stat-label">{{ t('about.stats.years.label') }}</div>
-            </div>
-            <div class="stat-item">
-              <div class="stat-number">{{ t('about.stats.dedication.number') }}</div>
-              <div class="stat-label">{{ t('about.stats.dedication.label') }}</div>
             </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
     </ScrollReveal>
 
     <!-- Projects Section -->
@@ -469,9 +540,36 @@ onUnmounted(() => {
           <h2 class="section-title">{{ t('projects.title') }}</h2>
         <div class="projects-grid">
           <div class="project-card" v-for="project in projects" :key="project.id">
-            <div class="project-image">
-              <div class="project-placeholder">
+            <div class="project-image-wrapper">
+              <img 
+                v-if="project.imageUrl && !project.imageUrl.startsWith('linear-gradient')"
+                :src="project.imageUrl" 
+                :alt="`${project.title} preview`"
+                class="project-screenshot"
+                loading="lazy"
+                @error="(e) => (e.target as HTMLImageElement).style.display = 'none'"
+              />
+              <div 
+                v-else
+                class="project-image-fallback"
+                :style="{ background: project.imageUrl }"
+              >
                 <span class="project-icon">{{ project.icon }}</span>
+              </div>
+              <!-- Featured Badge -->
+              <div v-if="project.featured && !project.wip" class="project-featured-badge">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                </svg>
+                <span>Featured</span>
+              </div>
+              <!-- Work in Progress Badge -->
+              <div v-if="project.wip" class="project-wip-badge">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"/>
+                  <polyline points="12 6 12 12 16 14"/>
+                </svg>
+                <span>Work in Progress</span>
               </div>
             </div>
             <div class="project-content">
@@ -483,19 +581,21 @@ onUnmounted(() => {
                 </span>
               </div>
               <div class="project-links">
-                <a :href="project.github" target="_blank" class="project-link">
-                  <span>{{ t('projects.links.github') }}</span>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                    <path d="M7 17L17 7M17 7H7M17 7V17"/>
+                <a :href="project.github" target="_blank" rel="noopener noreferrer" class="project-link">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
                   </svg>
+                  <span>GitHub</span>
                 </a>
-                <a v-if="project.demo" :href="project.demo" target="_blank" class="project-link">
-                  <span>{{ t('projects.links.demo') }}</span>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                    <path d="M7 17L17 7M17 7H7M17 7V17"/>
+                <a v-if="project.demo && project.demo !== '#'" :href="project.demo" target="_blank" rel="noopener noreferrer" class="project-link project-link-primary">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                    <polyline points="15 3 21 3 21 9"/>
+                    <line x1="10" y1="14" x2="21" y2="3"/>
                   </svg>
-    </a>
-  </div>
+                  <span>Live Demo</span>
+                </a>
+              </div>
             </div>
           </div>
         </div>
@@ -1704,78 +1804,281 @@ onUnmounted(() => {
 /* About Section */
 .about-section {
   padding: 5rem 0;
-  background: #f8fafc;
+  background: linear-gradient(180deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+  position: relative;
+  overflow: hidden;
 }
 
-.about-content {
+.about-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.5), transparent);
+}
+
+.about-section::after {
+  content: '';
+  position: absolute;
+  top: 10%;
+  right: -10%;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(102, 126, 234, 0.15) 0%, transparent 70%);
+  border-radius: 50%;
+  filter: blur(60px);
+  pointer-events: none;
+}
+
+.about-section .container {
+  position: relative;
+  z-index: 1;
+}
+
+.about-grid {
   display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 4rem;
-  align-items: start;
+  grid-template-columns: 1fr;
+  gap: 2.5rem;
+  margin-top: 3rem;
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
-.about-intro h3 {
-  font-size: 1.8rem;
-  margin-bottom: 1rem;
-  color: #333;
-}
-
-.about-intro p {
-  font-size: 1.1rem;
-  line-height: 1.7;
-  margin-bottom: 2rem;
-  color: #666;
-}
-
-.skills-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 2rem;
-}
-
-.skill-category h4 {
-  font-size: 1.2rem;
-  margin-bottom: 1rem;
-  color: #333;
-}
-
-.skill-category ul {
-  list-style: none;
-}
-
-.skill-category li {
-  padding: 0.5rem 0;
-  color: #666;
-  border-bottom: 1px solid #e2e8f0;
-}
-
-.about-stats {
+/* Left Column */
+.about-main {
   display: flex;
   flex-direction: column;
   gap: 2rem;
 }
 
-.stat-item {
-  text-align: center;
-  padding: 1.5rem;
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-}
-
-.stat-number {
-  font-size: 2.5rem;
+.about-headline {
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
   font-weight: 700;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  line-height: 1.3;
+  background: linear-gradient(135deg, #a78bfa 0%, #ec4899 50%, #667eea 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  margin-bottom: 1rem;
+  animation: gradient-shift 8s ease infinite;
+  background-size: 200% 200%;
 }
 
-.stat-label {
+@keyframes gradient-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+.about-intro {
+  font-size: 1.125rem;
+  line-height: 1.8;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 1.5rem;
+}
+
+.about-card {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.about-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 40px rgba(102, 126, 234, 0.3);
+  border-color: rgba(167, 139, 250, 0.4);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.card-icon {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  filter: drop-shadow(0 4px 8px rgba(167, 139, 250, 0.5));
+  display: inline-block;
+}
+
+.card-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 1rem;
+}
+
+.card-text {
+  font-size: 1.0625rem;
+  line-height: 1.8;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+/* Right Sidebar */
+.about-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+/* Value Card */
+.value-card {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  transition: all 0.4s ease;
+}
+
+.value-card:hover {
+  box-shadow: 0 12px 40px rgba(102, 126, 234, 0.3);
+  border-color: rgba(167, 139, 250, 0.4);
+  background: rgba(255, 255, 255, 0.08);
+  transform: translateY(-4px);
+}
+
+.value-title {
+  font-size: 1.375rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.value-title::before {
+  content: '✨';
+  font-size: 1.5rem;
+  filter: drop-shadow(0 2px 6px rgba(167, 139, 250, 0.6));
+}
+
+.value-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 1.125rem;
+}
+
+.value-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.875rem;
   font-size: 1rem;
-  color: #666;
-  margin-top: 0.5rem;
+  color: rgba(255, 255, 255, 0.85);
+  line-height: 1.7;
+  transition: all 0.3s ease;
+  padding: 0.5rem 0;
+}
+
+.value-item:hover {
+  color: rgba(255, 255, 255, 1);
+  transform: translateX(4px);
+}
+
+.check-icon {
+  flex-shrink: 0;
+  color: #a78bfa;
+  margin-top: 3px;
+  filter: drop-shadow(0 2px 4px rgba(167, 139, 250, 0.4));
+}
+
+/* CV Download Card */
+.cv-card {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 20px;
+  padding: 2rem;
+  color: white;
+  box-shadow: 0 12px 40px rgba(102, 126, 234, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.4s ease;
+}
+
+.cv-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 16px 48px rgba(102, 126, 234, 0.5);
+}
+
+.cv-header {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  margin-bottom: 1.125rem;
+}
+
+.cv-icon {
+  flex-shrink: 0;
+  filter: drop-shadow(0 2px 6px rgba(255, 255, 255, 0.3));
+}
+
+.cv-title {
+  font-size: 1.375rem;
+  font-weight: 700;
+  color: white;
+}
+
+.cv-description {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.95);
+  margin-bottom: 1.75rem;
+  line-height: 1.7;
+}
+
+.cv-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.cv-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.625rem;
+  padding: 1rem 1.25rem;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 0.9375rem;
+  text-decoration: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 2px solid transparent;
+}
+
+.cv-button svg {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+}
+
+.cv-button-primary {
+  background: white;
+  color: #667eea;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.cv-button-primary:hover {
+  background: #f8fafc;
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.cv-button-secondary {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border-color: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(10px);
+}
+
+.cv-button-secondary:hover {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.6);
+  transform: translateY(-3px) scale(1.02);
 }
 
 /* Projects Section */
@@ -1792,60 +2095,153 @@ onUnmounted(() => {
 
 .project-card {
   background: white;
-  border-radius: 12px;
+  border-radius: 16px;
   overflow: hidden;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   border: 1px solid #e2e8f0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .project-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(102, 126, 234, 0.15);
+  border-color: rgba(102, 126, 234, 0.3);
 }
 
-.project-image {
-  height: 200px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+/* Project Image Wrapper */
+.project-image-wrapper {
+  position: relative;
+  height: 240px;
+  overflow: hidden;
+  background: #f8fafc;
+}
+
+.project-screenshot {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.project-card:hover .project-screenshot {
+  transform: scale(1.05);
+}
+
+.project-image-fallback {
+  width: 100%;
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.project-placeholder {
-  text-align: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
 
 .project-icon {
-  font-size: 3rem;
+  font-size: 3.5rem;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+}
+
+/* Featured Badge */
+.project-featured-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+  color: #1a202c;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 4px 12px rgba(255, 215, 0, 0.4);
+  z-index: 10;
+}
+
+.project-featured-badge svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* Work in Progress Badge */
+.project-wip-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+  z-index: 10;
+  animation: pulse-wip 2s ease-in-out infinite;
+}
+
+.project-wip-badge svg {
+  width: 14px;
+  height: 14px;
+  animation: rotate-clock 2s linear infinite;
+}
+
+@keyframes pulse-wip {
+  0%, 100% {
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+  }
+  50% {
+    box-shadow: 0 4px 16px rgba(245, 158, 11, 0.6);
+  }
+}
+
+@keyframes rotate-clock {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .project-content {
-  padding: 1.5rem;
+  padding: 1.75rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 .project-title {
-  font-size: 1.3rem;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-  color: #333;
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+  color: #1a202c;
+  line-height: 1.3;
 }
 
 .project-description {
-  color: #666;
-  margin-bottom: 1rem;
-  line-height: 1.6;
+  color: #64748b;
+  margin-bottom: 1.25rem;
+  line-height: 1.7;
+  font-size: 0.9375rem;
+  flex: 1;
 }
 
 .project-tech {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
-  margin-bottom: 1rem;
+  margin-bottom: 1.25rem;
 }
 
 .tech-tag {
-  background: #f1f5f9;
+  background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
   color: #475569;
   padding: 0.25rem 0.75rem;
   border-radius: 20px;
@@ -1854,21 +2250,45 @@ onUnmounted(() => {
 
 .project-links {
   display: flex;
-  gap: 1rem;
+  gap: 0.75rem;
+  flex-wrap: wrap;
 }
 
 .project-link {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  color: #667eea;
+  padding: 0.625rem 1.125rem;
+  border-radius: 8px;
   text-decoration: none;
-  font-weight: 500;
-  transition: color 0.3s ease;
+  font-weight: 600;
+  font-size: 0.875rem;
+  transition: all 0.3s ease;
+  border: 1px solid #e2e8f0;
+  background: white;
+  color: #475569;
 }
 
 .project-link:hover {
-  color: #764ba2;
+  background: #f8fafc;
+  border-color: #cbd5e1;
+  transform: translateY(-2px);
+}
+
+.project-link svg {
+  flex-shrink: 0;
+}
+
+.project-link-primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-color: transparent;
+}
+
+.project-link-primary:hover {
+  background: linear-gradient(135deg, #5568d3 0%, #653a8b 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
 }
 
 /* Contact Section */
@@ -2250,6 +2670,23 @@ onUnmounted(() => {
 
 }
 
+/* Desktop - 2 column layout for about section */
+@media (min-width: 1024px) {
+  .about-grid {
+    grid-template-columns: 1.4fr 1fr;
+    gap: 3rem;
+    max-width: 1200px;
+  }
+
+  .about-headline {
+    text-align: left;
+  }
+
+  .about-intro {
+    text-align: left;
+  }
+}
+
 @media (max-width: 768px) {
   /* Mobile navigation handled by ModernHeader component */
 
@@ -2336,13 +2773,72 @@ onUnmounted(() => {
     margin-right: auto;
   }
 
-  .about-content {
-    grid-template-columns: 1fr;
-    gap: 2rem;
+  .about-section {
+    padding: 3.5rem 0;
   }
 
-  .skills-grid {
+  .about-grid {
     grid-template-columns: 1fr;
+    gap: 2rem;
+    margin-top: 2rem;
+  }
+
+  .about-headline {
+    font-size: clamp(1.5rem, 5vw, 2rem);
+    text-align: center;
+  }
+
+  .about-intro {
+    text-align: center;
+    font-size: 1.0625rem;
+  }
+
+  .about-sidebar {
+    position: static;
+  }
+
+  .about-card {
+    padding: 1.5rem;
+  }
+
+  .card-icon {
+    font-size: 2.25rem;
+  }
+
+  .card-title {
+    font-size: 1.375rem;
+  }
+
+  .card-text {
+    font-size: 1rem;
+  }
+
+  .value-card,
+  .cv-card {
+    padding: 1.75rem;
+  }
+
+  .value-title {
+    font-size: 1.25rem;
+  }
+
+  .value-item {
+    font-size: 0.9375rem;
+  }
+
+  .cv-buttons {
+    grid-template-columns: 1fr;
+    gap: 0.875rem;
+  }
+
+  .cv-button {
+    padding: 1rem 1.25rem;
+    font-size: 1rem;
+  }
+
+  .cv-button svg {
+    width: 20px;
+    height: 20px;
   }
 
   .contact-content {
@@ -2490,6 +2986,59 @@ onUnmounted(() => {
   .hero-content {
     padding: 2rem 15px;
     gap: 3rem;
+  }
+
+  .about-section {
+    padding: 2.5rem 0;
+  }
+
+  .about-grid {
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+  }
+
+  .about-headline {
+    font-size: clamp(1.375rem, 5vw, 1.75rem);
+  }
+
+  .about-intro {
+    font-size: 1rem;
+  }
+
+  .about-card,
+  .value-card,
+  .cv-card {
+    padding: 1.25rem;
+  }
+
+  .card-title {
+    font-size: 1.25rem;
+  }
+
+  .card-text {
+    font-size: 0.9375rem;
+  }
+
+  .value-title {
+    font-size: 1.125rem;
+  }
+
+  .value-item {
+    font-size: 0.875rem;
+    gap: 0.625rem;
+  }
+
+  .cv-title {
+    font-size: 1.125rem;
+  }
+
+  .cv-description {
+    font-size: 0.9375rem;
+  }
+
+  .cv-button {
+    padding: 0.875rem 1rem;
+    font-size: 0.9375rem;
   }
 
   .hero-title {
