@@ -14,6 +14,15 @@ export interface Project {
 export const realProjects: readonly Project[] = [
   {
     id: 1,
+    title: 'Football Team Management Platform',
+    description: 'Plataforma multi-tenant para gestión de equipos deportivos con arquitectura escalable. Soporta múltiples equipos con aislamiento de datos, roles personalizados, branding customizable, estadísticas en tiempo real y sistema completo de eventos.',
+    technologies: ['React', 'TypeScript', 'Firebase', 'Vite'] as const,
+    github: 'https://github.com/rodrigofrende/futbol-schedule',
+    icon: '⚽',
+    featured: true
+  },
+  {
+    id: 2,
     title: 'FURIA FC - Team Management',
     description: 'Plataforma completa para gestión de equipo de fútbol femenino con sistema de asistencia, calendario de eventos, estadísticas de jugadoras y resultados de partidos en tiempo real.',
     technologies: ['React', 'TypeScript', 'Firebase', 'Vite'] as const,
@@ -23,7 +32,7 @@ export const realProjects: readonly Project[] = [
     featured: true
   },
   {
-    id: 2,
+    id: 3,
     title: 'RF3D Shop',
     description: 'E-commerce moderno para venta de modelos 3D con carrito de compras, sistema de filtros, y galería interactiva. Incluye gestión de productos y checkout completo.',
     technologies: ['Vue.js', 'Pinia', 'CSS3', 'JavaScript'] as const,
@@ -33,7 +42,7 @@ export const realProjects: readonly Project[] = [
     featured: true
   },
   {
-    id: 3,
+    id: 4,
     title: 'Poké Palette',
     description: 'Generador de paletas de colores inspiradas en Pokémon. Extrae colores dominantes de sprites oficiales y permite exportar en múltiples formatos (HEX, RGB, HSL).',
     technologies: ['React', 'PokeAPI', 'Canvas API', 'TypeScript'] as const,
@@ -43,7 +52,7 @@ export const realProjects: readonly Project[] = [
     wip: true
   },
   {
-    id: 4,
+    id: 5,
     title: 'UI Storybook',
     description: 'Biblioteca de componentes UI reutilizables documentados con Storybook. Incluye botones, cards, modales, forms y más, con variantes y estados interactivos.',
     technologies: ['Storybook', 'React', 'TypeScript', 'CSS Modules'] as const,
@@ -52,7 +61,7 @@ export const realProjects: readonly Project[] = [
     wip: true
   },
   {
-    id: 5,
+    id: 6,
     title: 'Confetti Counter',
     description: 'Contador interactivo con efectos de confetti celebratorios. Implementa animaciones canvas, persistencia local y sonidos personalizables para hitos específicos.',
     technologies: ['React', 'TypeScript', 'Web Audio API', 'Tailwind CSS'] as const,
