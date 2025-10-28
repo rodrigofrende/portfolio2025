@@ -8,7 +8,9 @@ export interface Project {
   demo?: string
   icon: string
   featured?: boolean
-  wip?: boolean // Work in Progress
+  stable?: boolean // Stable version / Production ready
+  improving?: boolean // Being improved / Optimized
+  wip?: boolean // Work in Progress / Active development
 }
 
 export const realProjects: readonly Project[] = [
@@ -19,7 +21,8 @@ export const realProjects: readonly Project[] = [
     technologies: ['React', 'TypeScript', 'Firebase', 'Vite'] as const,
     github: 'https://github.com/rodrigofrende/futbol-schedule',
     icon: '⚽',
-    featured: true
+    featured: true,
+    wip: true
   },
   {
     id: 2,
@@ -29,7 +32,7 @@ export const realProjects: readonly Project[] = [
     github: 'https://github.com/rodrigofrende/furiaFC-Schecule',
     demo: 'https://furiafutbolclub.netlify.app',
     icon: '⚽',
-    featured: true
+    stable: true
   },
   {
     id: 3,
@@ -39,7 +42,8 @@ export const realProjects: readonly Project[] = [
     github: 'https://github.com/rodrigofrende/rf3d-shop',
     demo: 'https://rf3d.netlify.app',
     icon: '🎨',
-    featured: true
+    wip: true,
+    improving: true
   },
   {
     id: 4,
@@ -49,7 +53,7 @@ export const realProjects: readonly Project[] = [
     github: 'https://github.com/rodrigofrende/Poke-palette',
     demo: 'https://pokepalette.netlify.app/',
     icon: '🎮',
-    wip: true
+    improving: true
   },
   {
     id: 5,
@@ -62,12 +66,24 @@ export const realProjects: readonly Project[] = [
   },
   {
     id: 6,
-    title: 'Confetti Counter',
+    title: 'Money Metrics',
     description: 'Contador interactivo con efectos de confetti celebratorios. Implementa animaciones canvas, persistencia local y sonidos personalizables para hitos específicos.',
     technologies: ['React', 'TypeScript', 'Web Audio API', 'Tailwind CSS'] as const,
     github: 'https://github.com/rodrigofrende/confettiCounter',
     demo: 'https://moneymetrics.netlify.app',
-    icon: '🎉'
+    icon: '🎉',
+    stable: true
+  },
+  {
+    id: 7,
+    title: 'DevMovies - Movie Search',
+    description: 'Aplicación de búsqueda de películas usando OMDb API con testing completo. Incluye custom hooks (useLocalStorage, useKeyboardShortcut), búsquedas recientes, paginación, modales de detalles y atajos de teclado. Testing con Jest y Playwright.',
+    technologies: ['React', 'Vite', 'Tailwind CSS', 'TypeScript', 'OMDb API'] as const,
+    github: 'https://github.com/rodrigofrende/montagne-imdb',
+    demo: 'https://montagne-imdb.vercel.app',
+    icon: '🎬',
+    featured: true,
+    stable: true
   }
 ] as const
 

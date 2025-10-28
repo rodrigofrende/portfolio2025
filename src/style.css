@@ -23,7 +23,25 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
-  background-color: #16172f;
+  /* Fondo unificado continuo para toda la página */
+  background: 
+    radial-gradient(ellipse at 20% 10%, rgba(102, 126, 234, 0.15) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 30%, rgba(118, 75, 162, 0.12) 0%, transparent 50%),
+    radial-gradient(ellipse at 40% 60%, rgba(167, 139, 250, 0.1) 0%, transparent 50%),
+    radial-gradient(ellipse at 70% 90%, rgba(102, 126, 234, 0.08) 0%, transparent 40%),
+    linear-gradient(180deg, 
+      #0a0817 0%,
+      #0f0c1d 15%,
+      #12101f 30%,
+      #151220 45%,
+      #181526 55%,
+      #1a182a 65%,
+      #1d1b2e 75%,
+      #201e32 85%,
+      #232136 100%
+    );
+  background-attachment: fixed;
+  background-size: 100% 100%;
 }
 
 html {

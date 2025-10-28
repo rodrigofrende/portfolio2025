@@ -15,8 +15,8 @@ const lerp = (start: number, end: number, factor: number) => {
 }
 
 const updateCursor = () => {
-  cursorDotX.value = lerp(cursorDotX.value, cursorX.value, 0.15)
-  cursorDotY.value = lerp(cursorDotY.value, cursorY.value, 0.15)
+  cursorDotX.value = lerp(cursorDotX.value, cursorX.value, 0.25)
+  cursorDotY.value = lerp(cursorDotY.value, cursorY.value, 0.25)
   
   rafId = requestAnimationFrame(updateCursor)
 }
@@ -107,66 +107,78 @@ onUnmounted(() => {
 
 .cursor-dot {
   position: fixed;
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
   background: linear-gradient(135deg, #a78bfa, #ec4899);
   border-radius: 50%;
   transform: translate(-50%, -50%);
   transition: transform 0.15s ease, opacity 0.15s ease;
-  box-shadow: 0 0 10px rgba(167, 139, 250, 0.6);
+  box-shadow: 0 0 4px rgba(167, 139, 250, 0.3);
   z-index: 10001;
+  opacity: 0.8;
 }
 
 .cursor-dot.clicking {
-  transform: translate(-50%, -50%) scale(0.5);
+  transform: translate(-50%, -50%) scale(0.7);
 }
 
 .cursor-ring {
   position: fixed;
-  width: 40px;
-  height: 40px;
-  border: 2px solid rgba(167, 139, 250, 0.4);
+  width: 24px;
+  height: 24px;
+  border: 1.5px solid rgba(167, 139, 250, 0.25);
   border-radius: 50%;
   transform: translate(-50%, -50%);
-  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transition: all 0.25s ease-out;
   z-index: 10000;
+  opacity: 0.6;
 }
 
 .cursor-ring.clicking {
-  transform: translate(-50%, -50%) scale(0.8);
-  border-color: rgba(167, 139, 250, 0.8);
+  transform: translate(-50%, -50%) scale(0.85);
+  border-color: rgba(167, 139, 250, 0.5);
+  opacity: 0.8;
 }
 
 .cursor-ring.hovering {
-  transform: translate(-50%, -50%) scale(1.5);
-  border-color: rgba(167, 139, 250, 0.6);
-  background: rgba(167, 139, 250, 0.05);
+  transform: translate(-50%, -50%) scale(1.2);
+  border-color: rgba(167, 139, 250, 0.4);
+  background: rgba(167, 139, 250, 0.03);
+  opacity: 0.7;
 }
 
 .cursor-ring-inner {
   position: absolute;
   inset: 0;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(167, 139, 250, 0.1) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(167, 139, 250, 0.05) 0%, transparent 70%);
   opacity: 0;
   transition: opacity 0.3s ease;
 }
 
 .cursor-ring.hovering .cursor-ring-inner {
-  opacity: 1;
+  opacity: 0.5;
 }
 
 /* Hide default cursor on interactive elements */
 @media (pointer: fine) {
-  :global(a),
-  :global(button),
-  :global(.bento-card),
-  :global([role="button"]) {
+  :global(body) {
     cursor: none !important;
   }
   
-  :global(body) {
-    cursor: none !important;
+  /* Keep native cursor for text selection */
+  :global(p),
+  :global(span),
+  :global(h1),
+  :global(h2),
+  :global(h3),
+  :global(h4),
+  :global(h5),
+  :global(h6),
+  :global(li),
+  :global(input),
+  :global(textarea) {
+    cursor: text !important;
   }
 }
 </style>

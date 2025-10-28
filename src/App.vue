@@ -15,17 +15,47 @@ const currentRole = ref('')
 const currentCodeLine = ref('')
 const roles = [ 'Frontend Developer', 'UI/UX Designer', 'Tech Enthusiast', '3D Maker',]
 const codeLines = [
-  'npm create portfolio',
-  'git init && git add .',
-  'npm run dev',
-  'const skills = ["Vue", "React", "Vite"]',
-  'console.log("Hello World!")',
-  'while(true) { innovate(); learn(); improve(); }'
+  'npm create vite@latest portfolio -- --template vue-ts',
+  'git commit -m "feat: add interactive portfolio with animations"',
+  'pnpm build && firebase deploy --only hosting',
+  'await Promise.all(projects.map(p => optimize(p)))',
+  'const experience = years * passion * dedication',
+  'export default defineComponent({ name: "Innovation" })'
 ]
 let roleIndex = 0
 let codeIndex = 0
 let roleInterval: number | undefined
 let codeInterval: number | undefined
+
+// Terminal particles - generated once to avoid re-renders
+const terminalParticles = ref<Array<{ left: string; top: string; delay: string; duration: string }>>([])
+const aboutParticles = ref<Array<{ left: string; delay: string; duration: string }>>([])
+
+// Generate particles once
+const generateTerminalParticles = () => {
+  const particles = []
+  for (let i = 0; i < 20; i++) {
+    particles.push({
+      left: `${Math.random() * 100}%`,
+      top: `${Math.random() * 100}%`,
+      delay: `${Math.random() * 3}s`,
+      duration: `${3 + Math.random() * 2}s`
+    })
+  }
+  return particles
+}
+
+const generateAboutParticles = () => {
+  const particles = []
+  for (let i = 0; i < 15; i++) {
+    particles.push({
+      left: `${10 + Math.random() * 80}%`,
+      delay: `${Math.random() * 4}s`,
+      duration: `${4 + Math.random() * 3}s`
+    })
+  }
+  return particles
+}
 
 // Modern particle field
 const particleField = ref<HTMLElement>()
@@ -115,6 +145,94 @@ const valueItems = computed(() => {
 })
 
 // Navigation methods moved to ModernHeader component
+
+// Tech icon mapping function
+const getTechIcon = (tech: string): string => {
+  const iconMap: Record<string, string> = {
+    // Frontend Frameworks
+    'Vue.js': '💚',
+    'React': '⚛️',
+    'Angular': '🅰️',
+    'Svelte': '🔥',
+    
+    // Languages
+    'TypeScript': '💙',
+    'JavaScript': '💛',
+    'Python': '🐍',
+    'Java': '☕',
+    
+    // Build Tools
+    'Vite': '⚡',
+    'Webpack': '📦',
+    'Rollup': '📦',
+    
+    // State Management
+    'Pinia': '🍍',
+    'Redux': '🔄',
+    'Vuex': '📦',
+    
+    // Styling
+    'Tailwind CSS': '🎨',
+    'CSS3': '🎨',
+    'SASS': '🎨',
+    'CSS Modules': '🎨',
+    
+    // Backend & Database
+    'Firebase': '🔥',
+    'Node.js': '🟢',
+    'MongoDB': '🍃',
+    
+    // APIs & Services
+    'PokeAPI': '🎮',
+    'OMDb API': '🎬',
+    'API Integration': '🔌',
+    
+    // Testing
+    'Jest': '🃏',
+    'Playwright': '🎭',
+    'Vitest': '✅',
+    
+    // Tools & Libraries
+    'Storybook': '📚',
+    'Canvas API': '🖼️',
+    'Web Audio API': '🔊',
+    'Socket.io': '🔌',
+    'Chart.js': '📊',
+    'GSAP': '✨',
+    
+    // Default
+    'default': '🔧'
+  }
+  
+  return iconMap[tech] || '🔧'
+}
+
+// Get tech class name for styling
+const getTechClass = (tech: string): string => {
+  const normalizedTech = tech.toLowerCase().replace(/\s+/g, '-').replace(/\./g, '')
+  
+  // Map specific technologies to simplified class names
+  const classMap: Record<string, string> = {
+    'react': 'tech-react',
+    'vuejs': 'tech-vue',
+    'typescript': 'tech-typescript',
+    'firebase': 'tech-firebase',
+    'tailwind-css': 'tech-tailwind',
+    'vite': 'tech-vite',
+    'pinia': 'tech-pinia',
+    'css3': 'tech-css',
+    'css-modules': 'tech-css',
+    'javascript': 'tech-javascript',
+    'storybook': 'tech-storybook',
+    'pokeapi': 'tech-api',
+    'omdb-api': 'tech-api',
+    'canvas-api': 'tech-api',
+    'web-audio-api': 'tech-api',
+    'api-integration': 'tech-api'
+  }
+  
+  return classMap[normalizedTech] || 'tech-default'
+}
 
 // Typing animations
 const typeRole = () => {
@@ -384,6 +502,10 @@ onMounted(() => {
   particleStyles.value = generateParticleStyles()
   avatarParticleStyles.value = generateAvatarParticleStyles()
   
+  // Generate terminal and about particles once
+  terminalParticles.value = generateTerminalParticles()
+  aboutParticles.value = generateAboutParticles()
+  
   // Create animated text field
   createFloatingTexts()
   createTechTags()
@@ -422,28 +544,136 @@ onUnmounted(() => {
 
     <!-- Terminal Transition Element -->
     <div class="terminal-transition">
+      <!-- Floating particles around terminal -->
+      <div class="terminal-particles">
+        <div v-for="(particle, i) in terminalParticles" :key="i" class="terminal-particle" :style="{
+          left: particle.left,
+          top: particle.top,
+          animationDelay: particle.delay,
+          animationDuration: particle.duration
+        }"></div>
+      </div>
+      
+      <!-- Connection lines -->
+      <div class="connection-lines">
+        <div class="line line-1"></div>
+        <div class="line line-2"></div>
+        <div class="line line-3"></div>
+      </div>
+      
       <div class="code-terminal">
+        <!-- Glow effect -->
+        <div class="terminal-glow"></div>
+        
         <div class="terminal-header">
           <div class="terminal-buttons">
             <span class="btn-close"></span>
             <span class="btn-minimize"></span>
             <span class="btn-maximize"></span>
           </div>
-          <span class="terminal-title">portfolio.js</span>
-        </div>
-        <div class="terminal-body">
-          <div class="code-line">
-            <span class="code-prompt">$</span>
-            <span class="code-text typing-code">{{ currentCodeLine }}</span>
-            <span class="cursor">|</span>
+          <span class="terminal-title">~/portfolio/dev</span>
+          <div class="terminal-status">
+            <span class="status-dot"></span>
+            <span class="status-text">Connected</span>
           </div>
         </div>
+        <div class="terminal-body">
+          <!-- Multiple code lines with syntax highlighting -->
+          <div class="code-lines-container">
+            <div class="code-line">
+              <span class="line-number">1</span>
+              <span class="code-keyword">import</span>
+              <span class="code-punctuation"> { </span>
+              <span class="code-variable">creativity</span>
+              <span class="code-punctuation">,</span>
+              <span class="code-variable"> innovation</span>
+              <span class="code-punctuation"> } </span>
+              <span class="code-keyword">from</span>
+              <span class="code-string"> '@rodrigo/portfolio'</span>
+              <span class="code-punctuation">;</span>
+            </div>
+            <div class="code-line">
+              <span class="line-number">2</span>
+              <span class="code-keyword">const</span>
+              <span class="code-variable"> projects</span>
+              <span class="code-operator"> = </span>
+              <span class="code-keyword">await</span>
+              <span class="code-variable"> fetchProjects</span>
+              <span class="code-punctuation">(</span>
+              <span class="code-string">"featured"</span>
+              <span class="code-punctuation">);</span>
+            </div>
+            <div class="code-line">
+              <span class="line-number">3</span>
+              <span class="code-keyword">const</span>
+              <span class="code-variable"> passion</span>
+              <span class="code-operator"> = </span>
+              <span class="code-variable">code</span>
+              <span class="code-operator"> + </span>
+              <span class="code-variable">design</span>
+              <span class="code-operator"> * </span>
+              <span class="code-variable">perfection</span>
+              <span class="code-punctuation">;</span>
+            </div>
+            <div class="code-line code-line-active">
+              <span class="line-number">4</span>
+              <span class="code-prompt">$</span>
+              <span class="code-text typing-code">{{ currentCodeLine }}</span>
+              <span class="cursor">|</span>
+            </div>
+            <div class="code-line code-comment">
+              <span class="line-number">5</span>
+              <span class="code-comment-text">// Crafting digital experiences that inspire ✨</span>
+            </div>
+          </div>
+          
+          <!-- Terminal footer with stats -->
+          <div class="terminal-footer">
+            <div class="footer-stat">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+              </svg>
+              <span>Projects: 8+</span>
+            </div>
+            <div class="footer-stat">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+                <polyline points="12 6 12 12 16 14"/>
+              </svg>
+              <span>Active</span>
+            </div>
+            <div class="footer-stat">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                <polyline points="22 4 12 14.01 9 11.01"/>
+              </svg>
+              <span>Ready</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Decorative elements -->
+      <div class="terminal-decoration terminal-decoration-1">
+        <div class="deco-circle"></div>
+      </div>
+      <div class="terminal-decoration terminal-decoration-2">
+        <div class="deco-square"></div>
       </div>
     </div>
 
     <!-- About Section -->
     <ScrollReveal :delay="100">
       <section id="about" class="about-section">
+        <!-- Connecting particles -->
+        <div class="about-particles">
+          <div v-for="(particle, i) in aboutParticles" :key="i" class="about-particle" :style="{
+            left: particle.left,
+            animationDelay: particle.delay,
+            animationDuration: particle.duration
+          }"></div>
+        </div>
+        
         <div class="container">
           <h2 class="section-title">{{ t('about.title') }}</h2>
           
@@ -556,28 +786,50 @@ onUnmounted(() => {
               >
                 <span class="project-icon">{{ project.icon }}</span>
               </div>
-              <!-- Featured Badge -->
-              <div v-if="project.featured && !project.wip" class="project-featured-badge">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                </svg>
-                <span>Featured</span>
-              </div>
-              <!-- Work in Progress Badge -->
-              <div v-if="project.wip" class="project-wip-badge">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <circle cx="12" cy="12" r="10"/>
-                  <polyline points="12 6 12 12 16 14"/>
-                </svg>
-                <span>Work in Progress</span>
+              <!-- Badges Container -->
+              <div class="project-badges">
+                <!-- Featured Badge -->
+                <div v-if="project.featured" class="project-badge project-featured-badge">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                  </svg>
+                  <span>Featured</span>
+                </div>
+                
+                <!-- Stable Badge -->
+                <div v-if="project.stable" class="project-badge project-stable-badge">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"/>
+                  </svg>
+                  <span>Stable</span>
+                </div>
+                
+                <!-- Improving Badge -->
+                <div v-if="project.improving" class="project-badge project-improving-badge">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="12" y1="19" x2="12" y2="5"/>
+                    <polyline points="5 12 12 5 19 12"/>
+                  </svg>
+                  <span>Improving</span>
+                </div>
+                
+                <!-- Work in Progress Badge -->
+                <div v-if="project.wip" class="project-badge project-wip-badge">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"/>
+                    <polyline points="12 6 12 12 16 14"/>
+                  </svg>
+                  <span>WIP</span>
+                </div>
               </div>
             </div>
             <div class="project-content">
               <h3 class="project-title">{{ project.title }}</h3>
               <p class="project-description">{{ project.description }}</p>
               <div class="project-tech">
-                <span v-for="tech in project.technologies" :key="tech" class="tech-tag">
-                  {{ tech }}
+                <span v-for="tech in project.technologies" :key="tech" :class="['tech-tag', getTechClass(tech)]">
+                  <span class="tech-icon">{{ getTechIcon(tech) }}</span>
+                  <span class="tech-name">{{ tech }}</span>
                 </span>
               </div>
               <div class="project-links">
@@ -664,7 +916,7 @@ onUnmounted(() => {
   </div>
 </template>
 
-<style scoped>
+<style>
 /* Reset and base styles */
 * {
   margin: 0;
@@ -691,7 +943,9 @@ onUnmounted(() => {
   min-height: 100vh;
   display: flex;
   align-items: center;
-  background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+  background: rgba(15, 12, 41, 0.4);
+  backdrop-filter: blur(0px) brightness(1.05);
+  -webkit-backdrop-filter: blur(0px) brightness(1.05);
   color: white;
   position: relative;
   overflow: hidden;
@@ -1001,45 +1255,167 @@ onUnmounted(() => {
   position: relative;
   z-index: 2;
   width: 100%;
-  background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
-  padding: 2rem 0;
+  min-height: 400px;
+  background: rgba(20, 18, 38, 0.35);
+  backdrop-filter: blur(8px) brightness(1.02);
+  -webkit-backdrop-filter: blur(8px) brightness(1.02);
+  padding: 5rem 0;
+  overflow: hidden;
+}
+
+/* Floating Particles */
+.terminal-particles {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 50;
+}
+
+.terminal-particle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: radial-gradient(circle, rgba(102, 126, 234, 0.8) 0%, rgba(167, 139, 250, 0.4) 50%, transparent 70%);
+  border-radius: 50%;
+  animation: particle-float-terminal 4s ease-in-out infinite;
+  box-shadow: 0 0 10px rgba(102, 126, 234, 0.5);
+  will-change: transform, opacity;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+@keyframes particle-float-terminal {
+  0%, 100% {
+    transform: translate(0, 0) scale(1) translateZ(0);
+    opacity: 0.6;
+  }
+  50% {
+    transform: translate(20px, -30px) scale(1.3) translateZ(0);
+    opacity: 1;
+  }
+}
+
+/* Connection Lines */
+.connection-lines {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 50;
+}
+
+.line {
+  position: absolute;
+  background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.4), transparent);
+  height: 2px;
+  animation: line-pulse 3s ease-in-out infinite;
+  will-change: opacity, transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+.line-1 {
+  top: 30%;
+  left: 0;
+  right: 0;
+  animation-delay: 0s;
+}
+
+.line-2 {
+  top: 50%;
+  left: 0;
+  right: 0;
+  animation-delay: 1s;
+  background: linear-gradient(90deg, transparent, rgba(167, 139, 250, 0.3), transparent);
+}
+
+.line-3 {
+  top: 70%;
+  left: 0;
+  right: 0;
+  animation-delay: 2s;
+  background: linear-gradient(90deg, transparent, rgba(236, 72, 153, 0.3), transparent);
+}
+
+@keyframes line-pulse {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scaleX(0.8);
+  }
+  50% {
+    opacity: 1;
+    transform: scaleX(1);
+  }
 }
 
 /* Code Terminal */
 .code-terminal {
   position: relative;
-  width: 650px;
-  height: 220px;
+  width: 800px;
+  max-width: 90%;
+  height: auto;
+  min-height: 320px;
   flex-shrink: 0;
-  background: #1a1a1a;
-  border-radius: 18px;
+  background: rgba(13, 17, 23, 0.95);
+  border-radius: 20px;
   overflow: hidden;
-  z-index: 10;
+  z-index: 100;
   box-shadow: 
-    0 16px 64px rgba(0, 0, 0, 0.5),
-    0 0 0 1px rgba(255, 255, 255, 0.15),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1);
-  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
-  transition: all 0.3s ease;
+    0 20px 80px rgba(0, 0, 0, 0.6),
+    0 0 0 1px rgba(102, 126, 234, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 0 60px rgba(102, 126, 234, 0.2);
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', 'Courier New', monospace;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   margin: 0 auto;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
 }
 
 .code-terminal:hover {
-  transform: translateY(-6px);
+  transform: translateY(-8px) scale(1.02);
   box-shadow: 
-    0 20px 60px rgba(0, 0, 0, 0.6),
-    0 0 0 1px rgba(255, 255, 255, 0.2),
-    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    0 30px 100px rgba(0, 0, 0, 0.7),
+    0 0 0 1px rgba(102, 126, 234, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15),
+    0 0 80px rgba(102, 126, 234, 0.4);
+}
+
+/* Terminal Glow Effect */
+.terminal-glow {
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(102, 126, 234, 0.15) 0%, transparent 70%);
+  animation: glow-pulse 4s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+
+@keyframes glow-pulse {
+  0%, 100% {
+    opacity: 0.5;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
 }
 
 .terminal-header {
-  background: linear-gradient(to bottom, #2d2d2d, #1a1a1a);
-  padding: 12px 16px;
+  background: linear-gradient(to bottom, rgba(45, 45, 45, 0.9), rgba(26, 26, 26, 0.9));
+  padding: 14px 20px;
   display: flex;
   align-items: center;
-  gap: 12px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  gap: 16px;
+  border-bottom: 1px solid rgba(102, 126, 234, 0.2);
   position: relative;
+  backdrop-filter: blur(10px);
+  z-index: 1;
 }
 
 .terminal-header::before {
@@ -1049,12 +1425,12 @@ onUnmounted(() => {
   left: 0;
   right: 0;
   height: 1px;
-  background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.2), transparent);
+  background: linear-gradient(to right, transparent, rgba(102, 126, 234, 0.4), transparent);
 }
 
 .terminal-buttons {
   display: flex;
-  gap: 6px;
+  gap: 8px;
 }
 
 .terminal-buttons span {
@@ -1062,45 +1438,95 @@ onUnmounted(() => {
   height: 14px;
   border-radius: 50%;
   position: relative;
-  transition: all 0.2s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
 }
 
 .terminal-buttons span:hover {
-  transform: scale(1.1);
+  transform: scale(1.15);
+  filter: brightness(1.2);
 }
 
 .btn-close { 
-  background: #ff5f56; 
-  box-shadow: 0 0 0 1px rgba(255, 95, 86, 0.3);
+  background: linear-gradient(135deg, #ff5f56 0%, #e64a40 100%);
+  box-shadow: 0 0 0 1px rgba(255, 95, 86, 0.3), 0 2px 8px rgba(255, 95, 86, 0.4);
 }
 
 .btn-minimize { 
-  background: #ffbd2e; 
-  box-shadow: 0 0 0 1px rgba(255, 189, 46, 0.3);
+  background: linear-gradient(135deg, #ffbd2e 0%, #e5a820 100%);
+  box-shadow: 0 0 0 1px rgba(255, 189, 46, 0.3), 0 2px 8px rgba(255, 189, 46, 0.4);
 }
 
 .btn-maximize { 
-  background: #27ca3f; 
-  box-shadow: 0 0 0 1px rgba(39, 202, 63, 0.3);
+  background: linear-gradient(135deg, #27ca3f 0%, #1fb333 100%);
+  box-shadow: 0 0 0 1px rgba(39, 202, 63, 0.3), 0 2px 8px rgba(39, 202, 63, 0.4);
 }
 
 .terminal-title {
   color: #ffffff;
-  font-size: 0.9rem;
-  font-weight: 500;
-  margin-left: 12px;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin-left: auto;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+  letter-spacing: 0.3px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.terminal-title::before {
+  content: '📁';
+  font-size: 1rem;
+}
+
+.terminal-status {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  background: rgba(16, 185, 129, 0.15);
+  border-radius: 12px;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.6);
+  animation: status-pulse 2s ease-in-out infinite;
+}
+
+@keyframes status-pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(0.9);
+  }
+}
+
+.status-text {
+  color: #10b981;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
   letter-spacing: 0.5px;
 }
 
 .terminal-body {
-  padding: 24px;
-  background: #0d1117;
-  height: calc(100% - 48px);
+  padding: 28px;
+  background: rgba(13, 17, 23, 0.95);
+  min-height: 220px;
   position: relative;
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  justify-content: space-between;
+  z-index: 1;
 }
 
 .terminal-body::before {
@@ -1110,30 +1536,184 @@ onUnmounted(() => {
   left: 0;
   right: 0;
   height: 1px;
-  background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.1), transparent);
+  background: linear-gradient(to right, transparent, rgba(102, 126, 234, 0.2), transparent);
+}
+
+.code-lines-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .code-line {
   display: flex;
   align-items: center;
-  gap: 12px;
-  font-size: 1rem;
-  line-height: 1.5;
+  gap: 16px;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  padding: 4px 0;
+  transition: all 0.3s ease;
+}
+
+.code-line-active {
+  background: rgba(88, 166, 255, 0.08);
+  border-left: 3px solid #58a6ff;
+  padding-left: 12px;
+  margin-left: -12px;
+}
+
+.line-number {
+  color: rgba(255, 255, 255, 0.3);
+  font-size: 0.85rem;
+  min-width: 20px;
+  text-align: right;
+  user-select: none;
+}
+
+.code-keyword {
+  color: #ff7b72;
+  font-weight: 600;
+}
+
+.code-variable {
+  color: #79c0ff;
+}
+
+.code-operator {
+  color: #ff7b72;
+}
+
+.code-string {
+  color: #a5d6ff;
+}
+
+.code-punctuation {
+  color: #c9d1d9;
+}
+
+.code-comment {
+  opacity: 0.6;
+}
+
+.code-comment-text {
+  color: #8b949e;
+  font-style: italic;
 }
 
 .code-prompt {
   color: #58a6ff;
-  font-weight: 600;
+  font-weight: 700;
   font-size: 1.1rem;
-  text-shadow: 0 0 8px rgba(88, 166, 255, 0.3);
+  text-shadow: 0 0 10px rgba(88, 166, 255, 0.5);
 }
 
 .code-text {
   color: #f0f6fc;
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: 400;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
   letter-spacing: 0.3px;
+}
+
+/* Terminal Footer */
+.terminal-footer {
+  display: flex;
+  gap: 24px;
+  padding-top: 16px;
+  margin-top: 16px;
+  border-top: 1px solid rgba(102, 126, 234, 0.15);
+}
+
+.footer-stat {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.8rem;
+  font-weight: 500;
+  padding: 6px 12px;
+  background: rgba(102, 126, 234, 0.08);
+  border-radius: 8px;
+  border: 1px solid rgba(102, 126, 234, 0.15);
+  transition: all 0.3s ease;
+}
+
+.footer-stat:hover {
+  background: rgba(102, 126, 234, 0.15);
+  border-color: rgba(102, 126, 234, 0.3);
+  color: rgba(255, 255, 255, 0.9);
+  transform: translateY(-2px);
+}
+
+.footer-stat svg {
+  color: #667eea;
+}
+
+/* Decorative Elements */
+.terminal-decoration {
+  position: absolute;
+  pointer-events: none;
+  z-index: 50;
+}
+
+.terminal-decoration-1 {
+  top: 10%;
+  left: 10%;
+  animation: float-decoration 6s ease-in-out infinite;
+}
+
+.terminal-decoration-2 {
+  bottom: 15%;
+  right: 10%;
+  animation: float-decoration 8s ease-in-out infinite reverse;
+}
+
+@keyframes float-decoration {
+  0%, 100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  50% {
+    transform: translate(20px, -20px) rotate(180deg);
+  }
+}
+
+.deco-circle {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 2px solid rgba(102, 126, 234, 0.2);
+  background: radial-gradient(circle, rgba(102, 126, 234, 0.1) 0%, transparent 70%);
+  animation: deco-pulse 3s ease-in-out infinite;
+}
+
+.deco-square {
+  width: 60px;
+  height: 60px;
+  border-radius: 12px;
+  border: 2px solid rgba(167, 139, 250, 0.2);
+  background: linear-gradient(135deg, rgba(167, 139, 250, 0.08) 0%, transparent 100%);
+  transform: rotate(45deg);
+  animation: deco-rotate 8s linear infinite;
+}
+
+@keyframes deco-pulse {
+  0%, 100% {
+    opacity: 0.4;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.1);
+  }
+}
+
+@keyframes deco-rotate {
+  0% {
+    transform: rotate(45deg);
+  }
+  100% {
+    transform: rotate(405deg);
+  }
 }
 
 /* Tech Showcase */
@@ -1666,7 +2246,7 @@ onUnmounted(() => {
   color: rgba(0, 212, 255, 0.8);
 }
 
-/* Tech Tags */
+/* Animated Tech Tags - Background Animation */
 .tech-tags {
   position: absolute;
   width: 100%;
@@ -1674,7 +2254,7 @@ onUnmounted(() => {
   pointer-events: none;
 }
 
-.tech-tag {
+.tech-tags .floating-tag {
   position: absolute;
   color: rgba(255, 255, 255, var(--tag-opacity));
   font-size: 0.8rem;
@@ -1804,19 +2384,11 @@ onUnmounted(() => {
 /* About Section */
 .about-section {
   padding: 5rem 0;
-  background: linear-gradient(180deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+  background: rgba(30, 28, 50, 0.3);
+  backdrop-filter: blur(10px) brightness(0.98);
+  -webkit-backdrop-filter: blur(10px) brightness(0.98);
   position: relative;
   overflow: hidden;
-}
-
-.about-section::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.5), transparent);
 }
 
 .about-section::after {
@@ -1826,15 +2398,59 @@ onUnmounted(() => {
   right: -10%;
   width: 500px;
   height: 500px;
-  background: radial-gradient(circle, rgba(102, 126, 234, 0.15) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(102, 126, 234, 0.08) 0%, transparent 70%);
   border-radius: 50%;
-  filter: blur(60px);
+  filter: blur(80px);
   pointer-events: none;
+  z-index: 0;
 }
 
 .about-section .container {
   position: relative;
+  z-index: 2;
+}
+
+/* About Section Connecting Particles */
+.about-particles {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 200px;
+  pointer-events: none;
   z-index: 1;
+  overflow: hidden;
+}
+
+.about-particle {
+  position: absolute;
+  bottom: 0;
+  width: 3px;
+  height: 3px;
+  background: radial-gradient(circle, rgba(167, 139, 250, 0.9) 0%, rgba(102, 126, 234, 0.6) 40%, transparent 70%);
+  border-radius: 50%;
+  animation: particle-rise 6s ease-in infinite;
+  box-shadow: 0 0 12px rgba(167, 139, 250, 0.6);
+  will-change: transform, opacity;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+@keyframes particle-rise {
+  0% {
+    transform: translateY(0) scale(0.5) translateZ(0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(-200px) scale(1.5) translateZ(0);
+    opacity: 0;
+  }
 }
 
 .about-grid {
@@ -2084,22 +2700,25 @@ onUnmounted(() => {
 /* Projects Section */
 .projects-section {
   padding: 5rem 0;
-  background: linear-gradient(180deg, #16213e 0%, #1a1a2e 50%, #0f0f23 100%);
+  background: rgba(35, 33, 54, 0.28);
+  backdrop-filter: blur(12px) brightness(0.96);
+  -webkit-backdrop-filter: blur(12px) brightness(0.96);
   position: relative;
   overflow: hidden;
 }
 
-.projects-section::before {
+.projects-section::after {
   content: '';
   position: absolute;
   bottom: 10%;
   left: -10%;
   width: 500px;
   height: 500px;
-  background: radial-gradient(circle, rgba(102, 126, 234, 0.12) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(167, 139, 250, 0.08) 0%, transparent 70%);
   border-radius: 50%;
-  filter: blur(60px);
+  filter: blur(80px);
   pointer-events: none;
+  z-index: 0;
 }
 
 .projects-section .container {
@@ -2187,13 +2806,19 @@ onUnmounted(() => {
   50% { transform: translateY(-10px); }
 }
 
-/* Featured Badge */
-.project-featured-badge {
+/* Badges Container */
+.project-badges {
   position: absolute;
   top: 12px;
   right: 12px;
-  background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
-  color: #1a202c;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 10;
+}
+
+/* Base Badge Styles */
+.project-badge {
   padding: 6px 12px;
   border-radius: 20px;
   font-size: 0.75rem;
@@ -2201,46 +2826,99 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   gap: 6px;
-  box-shadow: 0 4px 12px rgba(255, 215, 0, 0.4);
-  z-index: 10;
+  backdrop-filter: blur(10px);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.project-featured-badge svg {
+.project-badge:hover {
+  transform: translateX(-4px);
+}
+
+.project-badge svg {
   width: 14px;
   height: 14px;
+  flex-shrink: 0;
 }
 
-/* Work in Progress Badge */
+/* Featured Badge - Golden Yellow */
+.project-featured-badge {
+  background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+  color: #1a202c;
+  box-shadow: 0 4px 12px rgba(255, 215, 0, 0.4);
+}
+
+.project-featured-badge:hover {
+  box-shadow: 0 6px 16px rgba(255, 215, 0, 0.5);
+}
+
+/* Stable Badge - Green */
+.project-stable-badge {
+  background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+  color: white;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+}
+
+.project-stable-badge:hover {
+  box-shadow: 0 6px 16px rgba(16, 185, 129, 0.5);
+}
+
+/* Improving Badge - Blue */
+.project-improving-badge {
+  background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%);
+  color: white;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+  animation: pulse-improving 2s ease-in-out infinite;
+}
+
+.project-improving-badge:hover {
+  box-shadow: 0 6px 16px rgba(59, 130, 246, 0.5);
+}
+
+.project-improving-badge svg {
+  animation: bounce-arrow 2s ease-in-out infinite;
+}
+
+/* Work in Progress Badge - Orange */
 .project-wip-badge {
-  position: absolute;
-  top: 12px;
-  right: 12px;
   background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%);
   color: white;
-  padding: 6px 12px;
-  border-radius: 20px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 6px;
   box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
-  z-index: 10;
   animation: pulse-wip 2s ease-in-out infinite;
 }
 
+.project-wip-badge:hover {
+  box-shadow: 0 6px 16px rgba(245, 158, 11, 0.5);
+}
+
 .project-wip-badge svg {
-  width: 14px;
-  height: 14px;
   animation: rotate-clock 2s linear infinite;
 }
 
+/* Animations */
 @keyframes pulse-wip {
   0%, 100% {
     box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
   }
   50% {
     box-shadow: 0 4px 16px rgba(245, 158, 11, 0.6);
+  }
+}
+
+@keyframes pulse-improving {
+  0%, 100% {
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+  }
+  50% {
+    box-shadow: 0 4px 16px rgba(59, 130, 246, 0.6);
+  }
+}
+
+@keyframes bounce-arrow {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-3px);
   }
 }
 
@@ -2258,6 +2936,9 @@ onUnmounted(() => {
   flex: 1;
   display: flex;
   flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  text-align: center;
   gap: 1rem;
 }
 
@@ -2271,6 +2952,8 @@ onUnmounted(() => {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  text-align: center;
+  width: 100%;
 }
 
 .project-description {
@@ -2280,44 +2963,313 @@ onUnmounted(() => {
   font-size: 0.9375rem;
   flex: 1;
   min-height: 3.6em;
+  text-align: center;
+  width: 100%;
 }
 
-.project-tech {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.625rem;
-  margin-bottom: 1.5rem;
-  min-height: 2rem;
+/* Tech Tags Container */
+.project-card .project-tech,
+.project-content .project-tech,
+div.project-tech {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  justify-content: center !important;
+  align-content: center !important;
+  gap: 0.625rem !important;
+  row-gap: 0.625rem !important;
+  column-gap: 0.625rem !important;
+  margin: 0 auto 1.25rem auto !important;
+  width: 100% !important;
+  min-height: 40px !important;
+  max-height: none !important;
+  height: auto !important;
+  box-sizing: border-box !important;
+  position: relative !important;
+  z-index: 1 !important;
+  padding: 0.25rem 0 !important;
 }
 
-.tech-tag {
-  background: rgba(102, 126, 234, 0.15);
-  color: #a78bfa;
-  padding: 0.375rem 0.875rem;
-  border-radius: 20px;
-  font-size: 0.8125rem;
-  font-weight: 600;
-  border: 1px solid rgba(167, 139, 250, 0.2);
-  transition: all 0.3s ease;
-  backdrop-filter: blur(10px);
+/* Individual Tech Tag */
+.project-card .project-content .project-tech .tech-tag,
+.project-content .project-tech span.tech-tag,
+.project-tech > span.tech-tag,
+div.project-tech > span {
+  /* Layout - NEVER ABSOLUTE! */
+  display: inline-flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-shrink: 0 !important;
+  flex-grow: 0 !important;
+  flex-basis: auto !important;
+  width: auto !important;
+  max-width: fit-content !important;
+  position: static !important;
+  float: none !important;
+  transform: none !important;
+  
+  /* Spacing */
+  padding: 0.5rem 1rem !important;
+  gap: 0.5rem !important;
+  margin: 0 !important;
+  
+  /* Typography */
+  font-size: 0.8125rem !important;
+  font-weight: 600 !important;
+  line-height: 1.3 !important;
+  white-space: nowrap !important;
+  letter-spacing: 0.02em !important;
+  text-align: center !important;
+  
+  /* Visual */
+  border-radius: 12px !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+  cursor: default !important;
+  box-sizing: border-box !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  
+  /* Animation */
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
-.tech-tag:hover {
-  background: rgba(102, 126, 234, 0.25);
-  border-color: rgba(167, 139, 250, 0.4);
-  transform: translateY(-2px);
+.project-card .project-content .project-tech .tech-tag:hover,
+.project-content .project-tech span.tech-tag:hover,
+.project-tech > span.tech-tag:hover {
+  transform: translateY(-3px) scale(1.03) !important;
+  filter: brightness(1.15) !important;
+}
+
+/* Tech Icon */
+.project-tech .tech-tag .tech-icon,
+.project-tech span.tech-icon {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 1rem !important;
+  line-height: 1 !important;
+  flex-shrink: 0 !important;
+  flex-grow: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  width: auto !important;
+  height: 1rem !important;
+  position: static !important;
+  transform: none !important;
+}
+
+/* Tech Name */
+.project-tech .tech-tag .tech-name,
+.project-tech span.tech-name {
+  display: inline-flex !important;
+  align-items: center !important;
+  line-height: 1.3 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  font-weight: 600 !important;
+  flex-shrink: 0 !important;
+  flex-grow: 0 !important;
+  position: static !important;
+  transform: none !important;
+}
+
+/* React - Cyan */
+.tech-react {
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.15) 0%, rgba(34, 211, 238, 0.15) 100%);
+  border: 1.5px solid rgba(6, 182, 212, 0.4);
+  color: #22d3ee !important;
+  box-shadow: 0 2px 8px rgba(6, 182, 212, 0.2);
+}
+
+.tech-react:hover {
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.25) 0%, rgba(34, 211, 238, 0.25) 100%);
+  border-color: rgba(6, 182, 212, 0.6);
+  box-shadow: 0 4px 16px rgba(6, 182, 212, 0.35);
+  color: #67e8f9 !important;
+}
+
+/* Vue - Green */
+.tech-vue {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(52, 211, 153, 0.15) 100%);
+  border: 1.5px solid rgba(16, 185, 129, 0.4);
+  color: #10b981 !important;
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.2);
+}
+
+.tech-vue:hover {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.25) 0%, rgba(52, 211, 153, 0.25) 100%);
+  border-color: rgba(16, 185, 129, 0.6);
+  box-shadow: 0 4px 16px rgba(16, 185, 129, 0.35);
+  color: #34d399 !important;
+}
+
+/* TypeScript - Blue */
+.tech-typescript {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(96, 165, 250, 0.15) 100%);
+  border: 1.5px solid rgba(59, 130, 246, 0.4);
+  color: #3b82f6 !important;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
+}
+
+.tech-typescript:hover {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.25) 0%, rgba(96, 165, 250, 0.25) 100%);
+  border-color: rgba(59, 130, 246, 0.6);
+  box-shadow: 0 4px 16px rgba(59, 130, 246, 0.35);
+  color: #60a5fa !important;
+}
+
+/* Firebase - Orange/Yellow */
+.tech-firebase {
+  background: linear-gradient(135deg, rgba(251, 146, 60, 0.15) 0%, rgba(251, 191, 36, 0.15) 100%);
+  border: 1.5px solid rgba(251, 146, 60, 0.4);
+  color: #fb923c !important;
+  box-shadow: 0 2px 8px rgba(251, 146, 60, 0.2);
+}
+
+.tech-firebase:hover {
+  background: linear-gradient(135deg, rgba(251, 146, 60, 0.25) 0%, rgba(251, 191, 36, 0.25) 100%);
+  border-color: rgba(251, 146, 60, 0.6);
+  box-shadow: 0 4px 16px rgba(251, 146, 60, 0.35);
+  color: #fbbf24 !important;
+}
+
+/* Tailwind - Cyan/Teal */
+.tech-tailwind {
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.15) 0%, rgba(14, 165, 233, 0.15) 100%);
+  border: 1.5px solid rgba(6, 182, 212, 0.4);
+  color: #06b6d4 !important;
+  box-shadow: 0 2px 8px rgba(6, 182, 212, 0.2);
+}
+
+.tech-tailwind:hover {
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.25) 0%, rgba(14, 165, 233, 0.25) 100%);
+  border-color: rgba(6, 182, 212, 0.6);
+  box-shadow: 0 4px 16px rgba(6, 182, 212, 0.35);
+  color: #22d3ee !important;
+}
+
+/* Vite - Purple/Pink */
+.tech-vite {
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.15) 0%, rgba(236, 72, 153, 0.15) 100%);
+  border: 1.5px solid rgba(168, 85, 247, 0.4);
+  color: #a855f7 !important;
+  box-shadow: 0 2px 8px rgba(168, 85, 247, 0.2);
+}
+
+.tech-vite:hover {
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.25) 0%, rgba(236, 72, 153, 0.25) 100%);
+  border-color: rgba(168, 85, 247, 0.6);
+  box-shadow: 0 4px 16px rgba(168, 85, 247, 0.35);
+  color: #c084fc !important;
+}
+
+/* Pinia - Yellow */
+.tech-pinia {
+  background: linear-gradient(135deg, rgba(250, 204, 21, 0.15) 0%, rgba(234, 179, 8, 0.15) 100%);
+  border: 1.5px solid rgba(250, 204, 21, 0.4);
+  color: #facc15 !important;
+  box-shadow: 0 2px 8px rgba(250, 204, 21, 0.2);
+}
+
+.tech-pinia:hover {
+  background: linear-gradient(135deg, rgba(250, 204, 21, 0.25) 0%, rgba(234, 179, 8, 0.25) 100%);
+  border-color: rgba(250, 204, 21, 0.6);
+  box-shadow: 0 4px 16px rgba(250, 204, 21, 0.35);
+  color: #fde047 !important;
+}
+
+/* CSS3 - Pink */
+.tech-css {
+  background: linear-gradient(135deg, rgba(236, 72, 153, 0.15) 0%, rgba(219, 39, 119, 0.15) 100%);
+  border: 1.5px solid rgba(236, 72, 153, 0.4);
+  color: #ec4899 !important;
+  box-shadow: 0 2px 8px rgba(236, 72, 153, 0.2);
+}
+
+.tech-css:hover {
+  background: linear-gradient(135deg, rgba(236, 72, 153, 0.25) 0%, rgba(219, 39, 119, 0.25) 100%);
+  border-color: rgba(236, 72, 153, 0.6);
+  box-shadow: 0 4px 16px rgba(236, 72, 153, 0.35);
+  color: #f472b6 !important;
+}
+
+/* JavaScript - Yellow */
+.tech-javascript {
+  background: linear-gradient(135deg, rgba(250, 204, 21, 0.15) 0%, rgba(234, 179, 8, 0.15) 100%);
+  border: 1.5px solid rgba(250, 204, 21, 0.4);
+  color: #facc15 !important;
+  box-shadow: 0 2px 8px rgba(250, 204, 21, 0.2);
+}
+
+.tech-javascript:hover {
+  background: linear-gradient(135deg, rgba(250, 204, 21, 0.25) 0%, rgba(234, 179, 8, 0.25) 100%);
+  border-color: rgba(250, 204, 21, 0.6);
+  box-shadow: 0 4px 16px rgba(250, 204, 21, 0.35);
+  color: #fde047 !important;
+}
+
+/* API - Purple */
+.tech-api {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.15) 0%, rgba(124, 58, 237, 0.15) 100%);
+  border: 1.5px solid rgba(139, 92, 246, 0.4);
+  color: #8b5cf6 !important;
+  box-shadow: 0 2px 8px rgba(139, 92, 246, 0.2);
+}
+
+.tech-api:hover {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.25) 0%, rgba(124, 58, 237, 0.25) 100%);
+  border-color: rgba(139, 92, 246, 0.6);
+  box-shadow: 0 4px 16px rgba(139, 92, 246, 0.35);
+  color: #a78bfa !important;
+}
+
+/* Storybook - Pink/Red */
+.tech-storybook {
+  background: linear-gradient(135deg, rgba(244, 63, 94, 0.15) 0%, rgba(225, 29, 72, 0.15) 100%);
+  border: 1.5px solid rgba(244, 63, 94, 0.4);
+  color: #f43f5e !important;
+  box-shadow: 0 2px 8px rgba(244, 63, 94, 0.2);
+}
+
+.tech-storybook:hover {
+  background: linear-gradient(135deg, rgba(244, 63, 94, 0.25) 0%, rgba(225, 29, 72, 0.25) 100%);
+  border-color: rgba(244, 63, 94, 0.6);
+  box-shadow: 0 4px 16px rgba(244, 63, 94, 0.35);
+  color: #fb7185 !important;
+}
+
+/* Default fallback for unknown techs */
+.tech-default {
+  background: linear-gradient(135deg, rgba(100, 116, 139, 0.15) 0%, rgba(71, 85, 105, 0.15) 100%);
+  border: 1.5px solid rgba(100, 116, 139, 0.4);
+  color: #64748b !important;
+  box-shadow: 0 2px 8px rgba(100, 116, 139, 0.2);
+}
+
+.tech-default:hover {
+  background: linear-gradient(135deg, rgba(100, 116, 139, 0.25) 0%, rgba(71, 85, 105, 0.25) 100%);
+  border-color: rgba(100, 116, 139, 0.6);
+  box-shadow: 0 4px 16px rgba(100, 116, 139, 0.35);
+  color: #94a3b8 !important;
 }
 
 .project-links {
   display: flex;
   gap: 0.875rem;
   flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
   margin-top: auto;
+  width: 100%;
 }
 
 .project-link {
   flex: 1;
   min-width: 120px;
+  max-width: 180px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -2366,9 +3318,18 @@ onUnmounted(() => {
 
 /* Contact Section */
 .contact-section {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.85) 0%, rgba(118, 75, 162, 0.85) 100%);
+  backdrop-filter: blur(15px) brightness(1.1);
+  -webkit-backdrop-filter: blur(15px) brightness(1.1);
   color: white;
   padding: 5rem 0 2rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.contact-section .container {
+  position: relative;
+  z-index: 1;
 }
 
 .contact-content {
@@ -2701,8 +3662,13 @@ onUnmounted(() => {
   }
   
   .code-terminal {
-    width: 600px;
-    height: 200px;
+    width: 700px;
+    min-height: 280px;
+  }
+  
+  .terminal-footer {
+    flex-wrap: wrap;
+    gap: 16px;
   }
 }
 
@@ -2737,8 +3703,22 @@ onUnmounted(() => {
   }
   
   .code-terminal {
-    width: 550px;
-    height: 180px;
+    width: 650px;
+    min-height: 260px;
+  }
+  
+  .terminal-transition {
+    min-height: 350px;
+    padding: 4rem 0;
+  }
+  
+  .code-lines-container {
+    gap: 6px;
+  }
+  
+  .terminal-footer {
+    flex-wrap: wrap;
+    gap: 12px;
   }
 
 }
@@ -2795,11 +3775,41 @@ onUnmounted(() => {
     margin: 0 auto;
   }
 
+  .terminal-transition {
+    min-height: 320px;
+    padding: 3rem 0;
+  }
+
   .code-terminal {
     width: 100%;
-    max-width: 450px;
-    height: 170px;
+    max-width: 500px;
+    min-height: 280px;
     margin: 0 auto;
+  }
+  
+  .terminal-body {
+    padding: 20px;
+  }
+  
+  .code-line {
+    font-size: 0.85rem;
+    gap: 12px;
+  }
+  
+  .terminal-footer {
+    flex-wrap: wrap;
+    gap: 10px;
+    padding-top: 12px;
+    margin-top: 12px;
+  }
+  
+  .footer-stat {
+    font-size: 0.75rem;
+    padding: 4px 8px;
+  }
+  
+  .terminal-decoration {
+    display: none;
   }
 
   .tech-grid {
@@ -2929,10 +3939,13 @@ onUnmounted(() => {
 
   .project-content {
     padding: 1.75rem;
+    align-items: center;
+    text-align: center;
   }
 
   .project-links {
     gap: 0.75rem;
+    justify-content: center;
   }
 
   .contact-content {
@@ -3185,30 +4198,47 @@ onUnmounted(() => {
 
   .project-content {
     padding: 1.5rem;
+    align-items: center;
+    text-align: center;
   }
 
   .project-title {
     font-size: 1.25rem;
+    text-align: center;
   }
 
   .project-description {
     font-size: 0.875rem;
     min-height: auto;
+    text-align: center;
+  }
+
+  .project-tech {
+    gap: 0.4rem;
+    justify-content: center;
   }
 
   .tech-tag {
     font-size: 0.75rem;
-    padding: 0.3rem 0.7rem;
+    padding: 0.375rem 0.75rem;
+    gap: 0.375rem;
+  }
+  
+  .tech-icon {
+    font-size: 0.875rem;
   }
 
   .project-links {
     flex-direction: column;
     gap: 0.625rem;
+    justify-content: center;
+    align-items: center;
   }
 
   .project-link {
     flex: 1 1 auto;
     width: 100%;
+    max-width: 280px;
   }
 
   .hero-visual {
@@ -3221,27 +4251,76 @@ onUnmounted(() => {
     max-width: 380px;
   }
 
+  .terminal-transition {
+    min-height: 280px;
+    padding: 2.5rem 0;
+  }
+
   .code-terminal {
-    max-width: 320px;
-    height: 140px;
+    max-width: 360px;
+    min-height: 240px;
+  }
+
+  .terminal-header {
+    padding: 10px 16px;
+  }
+  
+  .terminal-title {
+    font-size: 0.85rem;
+  }
+  
+  .terminal-title::before {
+    font-size: 0.9rem;
+  }
+  
+  .terminal-status {
+    display: none;
   }
 
   .terminal-body {
-    padding: 18px;
-    height: calc(100% - 48px);
+    padding: 16px;
+    min-height: 180px;
+  }
+  
+  .code-lines-container {
+    gap: 6px;
   }
 
   .code-line {
-    font-size: 0.9rem;
+    font-size: 0.8rem;
     gap: 10px;
   }
 
   .code-prompt {
-    font-size: 1rem;
+    font-size: 0.95rem;
   }
 
   .code-text {
-    font-size: 0.9rem;
+    font-size: 0.8rem;
+  }
+  
+  .line-number {
+    font-size: 0.75rem;
+    min-width: 16px;
+  }
+  
+  .terminal-footer {
+    flex-direction: column;
+    gap: 8px;
+    padding-top: 10px;
+    margin-top: 10px;
+  }
+  
+  .footer-stat {
+    font-size: 0.7rem;
+    padding: 4px 8px;
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .terminal-particle {
+    width: 3px;
+    height: 3px;
   }
 
   .tech-grid {

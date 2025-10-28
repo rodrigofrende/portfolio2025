@@ -61,7 +61,7 @@ Si fallan los anteriores, usa un gradiente bonito con el emoji del proyecto.
    - 🔧 Stack: Storybook, React, TypeScript, CSS Modules
    - 🎨 Badge: 📚
 
-5. **Confetti Counter**
+5. **Money Metrics**
    - 📍 URL: https://confetti-counter.netlify.app
    - 🔧 Stack: JavaScript, Canvas API, Web Audio API, CSS3
    - 🎨 Badge: 🎉
