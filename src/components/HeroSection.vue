@@ -1,13 +1,52 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 
-const { t } = useI18n()
+const { t, locale, messages } = useI18n()
 
 // Mouse parallax effect
 const mouseX = ref(0)
 const mouseY = ref(0)
 const isLoaded = ref(false)
+
+// Rotating phrases carousel
+const currentPhraseIndex = ref(0)
+const isTransitioning = ref(false)
+
+// Get rotating phrases from i18n messages directly
+const rotatingPhrases = computed(() => {
+  const currentLocale = locale.value
+  const messagesObj = messages.value[currentLocale] as any
+  
+  if (messagesObj?.hero?.rotatingPhrases && Array.isArray(messagesObj.hero.rotatingPhrases)) {
+    console.log('Phrases loaded:', messagesObj.hero.rotatingPhrases)
+    return messagesObj.hero.rotatingPhrases
+  }
+  
+  // Fallback
+  return [t('hero.titleHighlight')]
+})
+
+const currentPhrase = computed(() => {
+  const phrase = rotatingPhrases.value[currentPhraseIndex.value]
+  console.log('Current phrase:', phrase, 'Index:', currentPhraseIndex.value, 'Total:', rotatingPhrases.value.length)
+  return phrase
+})
+
+let phraseInterval: number | undefined
+
+// Rotate phrases with carousel animation
+const rotatePhrase = () => {
+  console.log('Rotating phrase...', 'Current index:', currentPhraseIndex.value)
+  isTransitioning.value = true
+  
+  setTimeout(() => {
+    const nextIndex = (currentPhraseIndex.value + 1) % rotatingPhrases.value.length
+    console.log('Next index:', nextIndex, 'Total phrases:', rotatingPhrases.value.length)
+    currentPhraseIndex.value = nextIndex
+    isTransitioning.value = false
+  }, 500) // Half of transition duration
+}
 
 // Pre-generate particles with better distribution (static, won't re-render)
 const particles = Array.from({ length: 50 }, (_, i) => {
@@ -64,10 +103,22 @@ onMounted(() => {
   
   // Add mouse move listener
   window.addEventListener('mousemove', handleMouseMove)
+  
+  // Debug: log loaded phrases
+  console.log('Loaded rotating phrases:', rotatingPhrases.value)
+  
+  // Start phrase rotation after initial load
+  setTimeout(() => {
+    console.log('Starting phrase rotation interval...')
+    phraseInterval = window.setInterval(rotatePhrase, 3500) // Change phrase every 3.5 seconds
+  }, 2000) // Wait 2 seconds before starting rotation
 })
 
 onUnmounted(() => {
   window.removeEventListener('mousemove', handleMouseMove)
+  if (phraseInterval) {
+    clearInterval(phraseInterval)
+  }
 })
 </script>
 
@@ -112,7 +163,15 @@ onUnmounted(() => {
         <span class="headline-main">
           {{ t('hero.title') }}
           <span class="headline-accent">{{ t('hero.titleAccent') }}</span>
-          <span class="headline-highlight">{{ t('hero.titleHighlight') }}</span>
+          <span class="headline-highlight-wrapper">
+            <span 
+              class="headline-highlight" 
+              :class="{ 'rotate-out': isTransitioning }"
+              :key="currentPhraseIndex"
+            >
+              {{ currentPhrase }}
+            </span>
+          </span>
         </span>
         </h1>
         
@@ -170,14 +229,26 @@ onUnmounted(() => {
           </div>
         </div>
 
-      <!-- Tech stack preview -->
+      <!-- Tech stack preview with infinite carousel -->
       <div class="tech-stack-preview fade-in-up" style="animation-delay: 1.2s">
         <p class="tech-label">{{ t('hero.poweredBy') }}</p>
-        <div class="tech-icons">
-          <div class="tech-badge" v-for="tech in techStack" :key="tech.name">
-            <span class="tech-dot" :style="{ background: tech.color }"></span>
-            <span class="tech-name">{{ tech.name }}</span>
+        <div class="tech-carousel-wrapper">
+          <div class="tech-carousel">
+            <!-- First set of badges -->
+            <div class="tech-carousel-track">
+              <div class="tech-badge" v-for="tech in techStack" :key="`${tech.name}-1`">
+                <span class="tech-dot" :style="{ background: tech.color }"></span>
+                <span class="tech-name">{{ tech.name }}</span>
+              </div>
             </div>
+            <!-- Duplicate set for seamless loop -->
+            <div class="tech-carousel-track">
+              <div class="tech-badge" v-for="tech in techStack" :key="`${tech.name}-2`">
+                <span class="tech-dot" :style="{ background: tech.color }"></span>
+                <span class="tech-name">{{ tech.name }}</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -480,6 +551,54 @@ onUnmounted(() => {
   border-radius: 2px;
 }
 
+/* Wrapper for rotating phrases */
+.headline-highlight-wrapper {
+  display: block;
+  perspective: 1000px;
+  position: relative;
+  min-height: 1.2em;
+  overflow: visible;
+}
+
+/* Carousel rotation animation */
+.headline-highlight {
+  animation: rotate-in 1s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  transform-origin: center center;
+  display: block;
+}
+
+.headline-highlight.rotate-out {
+  animation: rotate-out 0.5s cubic-bezier(0.6, -0.28, 0.735, 0.045) forwards;
+}
+
+@keyframes rotate-in {
+  0% {
+    opacity: 0;
+    transform: rotateX(90deg) translateY(30px);
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+    transform: rotateX(0deg) translateY(0);
+  }
+}
+
+@keyframes rotate-out {
+  0% {
+    opacity: 1;
+    transform: rotateX(0deg) translateY(0);
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 0;
+    transform: rotateX(-90deg) translateY(-30px);
+  }
+}
+
 /* ===================================
    CTA BUTTONS
    =================================== */
@@ -639,14 +758,16 @@ onUnmounted(() => {
 }
 
 /* ===================================
-   TECH STACK PREVIEW
+   TECH STACK PREVIEW - INFINITE CAROUSEL
    =================================== */
 .tech-stack-preview {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1.25rem;
+  gap: 1.5rem;
   margin-bottom: 3rem;
+  width: 100%;
+  max-width: 1200px;
 }
 
 .tech-label {
@@ -657,24 +778,71 @@ onUnmounted(() => {
   font-weight: 600;
 }
 
-.tech-icons {
+/* Carousel wrapper with overflow hidden */
+.tech-carousel-wrapper {
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 10%,
+    black 90%,
+    transparent
+  );
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 10%,
+    black 90%,
+    transparent
+  );
+}
+
+/* Carousel container with animation */
+.tech-carousel {
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-  justify-content: center;
+  width: fit-content;
+  animation: scroll-left 30s linear infinite;
+  will-change: transform;
+}
+
+/* Pause animation on hover */
+.tech-carousel-wrapper:hover .tech-carousel {
+  animation-play-state: paused;
+}
+
+/* Each track contains one set of badges */
+.tech-carousel-track {
+  display: flex;
+  gap: 1.25rem;
+  padding: 0 0.625rem;
+  flex-shrink: 0;
+}
+
+/* Infinite scroll animation */
+@keyframes scroll-left {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
 }
 
 .tech-badge {
   display: inline-flex;
   align-items: center;
-  gap: 7px;
-  padding: 7px 13px;
+  gap: 9px;
+  padding: 9px 16px;
   background: rgba(255, 255, 255, 0.08);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 10px;
+  border-radius: 12px;
   transition: all 0.3s ease;
   cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .tech-badge:hover {
@@ -694,7 +862,7 @@ onUnmounted(() => {
 
 .tech-name {
   color: rgba(255, 255, 255, 0.9);
-  font-size: 0.8125rem;
+  font-size: 0.875rem;
   font-weight: 600;
   white-space: nowrap;
   letter-spacing: 0.01em;
@@ -949,7 +1117,6 @@ onUnmounted(() => {
 
   .tech-stack-preview {
     margin-bottom: 2.5rem;
-    padding: 0 16px;
   }
 
   .tech-label {
@@ -957,24 +1124,26 @@ onUnmounted(() => {
     letter-spacing: 1.75px;
   }
 
-  .tech-icons {
-    gap: 0.625rem;
-    flex-wrap: wrap;
-    justify-content: center;
+  .tech-carousel {
+    animation-duration: 35s;
+  }
+
+  .tech-carousel-track {
+    gap: 1rem;
   }
   
   .tech-badge {
-    padding: 6px 11px;
-    gap: 6px;
+    padding: 7px 13px;
+    gap: 7px;
   }
 
   .tech-dot {
-    width: 6px;
-    height: 6px;
+    width: 7px;
+    height: 7px;
   }
 
   .tech-name {
-    font-size: 0.75rem;
+    font-size: 0.8125rem;
   }
 
   /* Reduce orb sizes on mobile */
@@ -1070,22 +1239,26 @@ onUnmounted(() => {
     letter-spacing: 1.5px;
   }
 
-  .tech-icons {
-    gap: 0.5rem;
+  .tech-carousel {
+    animation-duration: 40s;
+  }
+
+  .tech-carousel-track {
+    gap: 0.875rem;
   }
 
   .tech-badge {
-    padding: 5px 10px;
-    gap: 5px;
+    padding: 6px 12px;
+    gap: 6px;
   }
 
   .tech-dot {
-    width: 5px;
-    height: 5px;
+    width: 6px;
+    height: 6px;
   }
 
   .tech-name {
-    font-size: 0.6875rem;
+    font-size: 0.75rem;
   }
 
   /* Reduce orb sizes more on small mobile */

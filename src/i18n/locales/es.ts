@@ -11,6 +11,12 @@ const es = {
     title: 'Desarrollador Frontend',
     titleAccent: 'que crea',
     titleHighlight: 'experiencias memorables',
+    rotatingPhrases: [
+      'experiencias memorables',
+      'aplicaciones escalables',
+      'interfaces pixel-perfect',
+      'soluciones innovadoras'
+    ] as const,
     cta: {
       viewWork: 'Ver Mi Trabajo',
       letsTalk: 'Hablemos'
@@ -34,8 +40,8 @@ const es = {
   },
   about: {
     title: 'Sobre Mí',
-    headline: 'Desarrollador Frontend con pasión por crear experiencias digitales excepcionales',
-    intro: 'Soy Rodrigo, Frontend Developer especializado en Vue.js, React y TypeScript. Mi enfoque está en transformar ideas complejas en interfaces intuitivas y visualmente impactantes que los usuarios realmente disfrutan usar.',
+    headline: 'Creando experiencias web excepcionales',
+    intro: 'Transformo ideas complejas en interfaces intuitivas y visualmente impactantes que los usuarios realmente disfrutan usar.',
     journey: {
       title: 'Mi Trayectoria',
       text: 'Con más de 6 años de experiencia en desarrollo web, he trabajado tanto en software factories como en empresas de producto, abarcando proyectos muy diversos con clientes de distintos rubros. Desde plataformas de gestión deportiva hasta e-commerce de modelos 3D, este recorrido por todas las tecnologías web me ha enseñado a adaptarme rápidamente. Estoy en constante aprendizaje y mejora, siempre buscando nuevas formas de resolver problemas y crear mejores experiencias.'
@@ -51,7 +57,7 @@ const es = {
         'Despliegue e integración con AWS, Azure, Firebase y arquitecturas serverless',
         'Diseño de interfaces responsivas con CSS3, Tailwind y animaciones fluidas',
         'Trabajo con metodologías ágiles (SCRUM) y armado de requisitos funcionales',
-        'Optimización de rendimiento y mejores prácticas de accesibilidad (a11y)',
+        'Optimización de rendimiento y mejores prácticas de accesibilidad',
         'Detección proactiva de errores y análisis crítico de arquitectura',
         'Mentalidad orientada a resultados y atención al detalle'
       ] as const

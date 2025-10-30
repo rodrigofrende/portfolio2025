@@ -78,7 +78,7 @@ export const realProjects: readonly Project[] = [
     id: 7,
     title: 'DevMovies - Movie Search',
     description: 'Aplicación de búsqueda de películas usando OMDb API con testing completo. Incluye custom hooks (useLocalStorage, useKeyboardShortcut), búsquedas recientes, paginación, modales de detalles y atajos de teclado. Testing con Jest y Playwright.',
-    technologies: ['React', 'Vite', 'Tailwind CSS', 'TypeScript', 'OMDb API'] as const,
+    technologies: ['React', 'Vite', 'Tailwind CSS', 'JavaScript', 'OMDb API'] as const,
     github: 'https://github.com/rodrigofrende/montagne-imdb',
     demo: 'https://montagne-imdb.vercel.app',
     icon: '🎬',

@@ -62,9 +62,6 @@ onUnmounted(() => {
     <nav class="nav-container">
       <!-- Logo -->
       <div class="nav-logo" @click="scrollToSection('home')">
-        <div class="logo-icon">
-          <div class="logo-shape"></div>
-        </div>
         <span class="logo-text">RF Dev</span>
       </div>
 
@@ -166,11 +163,11 @@ onUnmounted(() => {
 
 /* Glass effect when scrolled */
 .modern-header.scrolled {
-  background: rgba(15, 12, 41, 0.8);
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  background: rgba(13, 13, 23, 0.7);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
   padding: 0.75rem 0;
 }
 
@@ -196,34 +193,6 @@ onUnmounted(() => {
 
 .nav-logo:hover {
   transform: scale(1.05);
-}
-
-.logo-icon {
-  width: 40px;
-  height: 40px;
-  border-radius: 12px;
-  background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(236, 72, 153, 0.2));
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  overflow: hidden;
-  transition: all 0.3s ease;
-}
-
-.nav-logo:hover .logo-icon {
-  background: linear-gradient(135deg, rgba(139, 92, 246, 0.3), rgba(236, 72, 153, 0.3));
-  box-shadow: 0 8px 16px rgba(139, 92, 246, 0.3);
-}
-
-.logo-shape {
-  width: 20px;
-  height: 20px;
-  background: linear-gradient(135deg, #a78bfa, #ec4899);
-  border-radius: 6px;
-  animation: rotate-logo 8s linear infinite;
 }
 
 @keyframes rotate-logo {
@@ -303,9 +272,9 @@ onUnmounted(() => {
   align-items: center;
   gap: 6px;
   padding: 8px 16px;
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: 10px;
   color: rgba(255, 255, 255, 0.9);
   font-size: 0.875rem;
@@ -315,10 +284,10 @@ onUnmounted(() => {
 }
 
 .lang-switcher:hover {
-  background: rgba(255, 255, 255, 0.15);
-  border-color: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(167, 139, 250, 0.25);
   transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3);
+  box-shadow: 0 4px 15px rgba(167, 139, 250, 0.2);
 }
 
 .lang-icon {
@@ -335,9 +304,9 @@ onUnmounted(() => {
   display: none;
   flex-direction: column;
   gap: 6px;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.03);
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: 12px;
   padding: 12px;
   cursor: pointer;
@@ -346,8 +315,9 @@ onUnmounted(() => {
 }
 
 .mobile-toggle:hover {
-  background: rgba(255, 255, 255, 0.15);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(167, 139, 250, 0.25);
+  box-shadow: 0 4px 12px rgba(167, 139, 250, 0.15);
 }
 
 .toggle-line {
@@ -378,11 +348,11 @@ onUnmounted(() => {
   right: -100%;
   width: min(300px, 80vw);
   height: 100vh;
-  background: rgba(15, 12, 41, 0.95);
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
-  border-left: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: -8px 0 32px 0 rgba(0, 0, 0, 0.5);
+  background: rgba(13, 13, 23, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-left: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: -8px 0 32px 0 rgba(0, 0, 0, 0.6);
   transition: right 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   z-index: 1000;
   padding-top: 100px;
@@ -473,8 +443,8 @@ onUnmounted(() => {
 
 .lang-badge {
   padding: 4px 12px;
-  background: rgba(167, 139, 250, 0.2);
-  border: 1px solid rgba(167, 139, 250, 0.3);
+  background: rgba(167, 139, 250, 0.15);
+  border: 1px solid rgba(167, 139, 250, 0.25);
   border-radius: 8px;
   font-size: 0.875rem;
   font-weight: 600;
@@ -506,8 +476,8 @@ onUnmounted(() => {
 }
 
 .mobile-lang-switcher:hover .lang-badge {
-  background: rgba(167, 139, 250, 0.3);
-  border-color: rgba(167, 139, 250, 0.5);
+  background: rgba(167, 139, 250, 0.25);
+  border-color: rgba(167, 139, 250, 0.4);
 }
 
 /* Mobile Overlay */
@@ -551,11 +521,6 @@ onUnmounted(() => {
   .logo-icon {
     width: 36px;
     height: 36px;
-  }
-
-  .logo-shape {
-    width: 18px;
-    height: 18px;
   }
 }
 

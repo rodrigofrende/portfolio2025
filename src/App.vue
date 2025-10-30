@@ -6,9 +6,10 @@ import CustomCursor from './components/CustomCursor.vue'
 import ScrollReveal from './components/ScrollReveal.vue'
 import ModernHeader from './components/ModernHeader.vue'
 import ScrollToTop from './components/ScrollToTop.vue'
+import AboutCarousel from './components/AboutCarousel.vue'
 import { realProjects, getBestProjectImage } from './data/projects'
 
-const { t, locale } = useI18n()
+const { t } = useI18n()
 
 // Reactive data
 const currentRole = ref('')
@@ -47,7 +48,8 @@ const generateTerminalParticles = () => {
 
 const generateAboutParticles = () => {
   const particles = []
-  for (let i = 0; i < 15; i++) {
+  // Reduced from 15 to 6 for better performance
+  for (let i = 0; i < 6; i++) {
     particles.push({
       left: `${10 + Math.random() * 80}%`,
       delay: `${Math.random() * 4}s`,
@@ -108,40 +110,6 @@ const projects = computed(() => {
     // Generate automatic screenshot URL
     imageUrl: getBestProjectImage(project)
   }))
-})
-
-// About value items - handle i18n array properly
-const valueItems = computed(() => {
-  try {
-    // Try to get the items directly as an array
-    const items = t('about.value.items') as unknown
-    if (Array.isArray(items)) {
-      return items
-    }
-    // Fallback: return hardcoded messages based on current locale
-    const currentLocale = locale.value || 'es'
-    const messages = currentLocale === 'es' ? [
-      'Desarrollo de aplicaciones web modernas con Vue.js/React y TypeScript',
-      'Despliegue e integración con AWS, Azure, Firebase y arquitecturas serverless',
-      'Diseño de interfaces responsivas con CSS3, Tailwind y animaciones fluidas',
-      'Trabajo con metodologías ágiles (SCRUM) y armado de requisitos funcionales',
-      'Optimización de rendimiento y mejores prácticas de accesibilidad (a11y)',
-      'Detección proactiva de errores y análisis crítico de arquitectura',
-      'Mentalidad orientada a resultados y atención al detalle'
-    ] : [
-      'Modern web application development with Vue.js/React and TypeScript',
-      'Deployment and integration with AWS, Azure, Firebase, and serverless architectures',
-      'Responsive interface design with CSS3, Tailwind, and smooth animations',
-      'Working with agile methodologies (SCRUM) and building functional requirements',
-      'Performance optimization and accessibility best practices (a11y)',
-      'Proactive error detection and critical architecture analysis',
-      'Results-oriented mindset and attention to detail'
-    ]
-    return messages
-  } catch (error) {
-    console.error('Error loading value items:', error)
-    return []
-  }
 })
 
 // Navigation methods moved to ModernHeader component
@@ -662,103 +630,39 @@ onUnmounted(() => {
       </div>
     </div>
 
-    <!-- About Section -->
+    <!-- About Section - Modern Design -->
     <ScrollReveal :delay="100">
       <section id="about" class="about-section">
-        <!-- Connecting particles -->
-        <div class="about-particles">
-          <div v-for="(particle, i) in aboutParticles" :key="i" class="about-particle" :style="{
-            left: particle.left,
-            animationDelay: particle.delay,
-            animationDuration: particle.duration
-          }"></div>
+        <!-- Animated Background -->
+        <div class="about-background">
+          <!-- Gradient orbs -->
+          <div class="about-orb about-orb-1"></div>
+          <div class="about-orb about-orb-2"></div>
+          
+          <!-- Floating particles -->
+          <div class="about-particles">
+            <div v-for="(particle, i) in aboutParticles" :key="i" class="about-particle" :style="{
+              left: particle.left,
+              animationDelay: particle.delay,
+              animationDuration: particle.duration
+            }"></div>
+          </div>
         </div>
         
         <div class="container">
-          <h2 class="section-title">{{ t('about.title') }}</h2>
-          
-          <div class="about-grid">
-            <!-- Left Column: Introduction & Story -->
-            <div class="about-main">
-              <p class="about-headline">{{ t('about.headline') }}</p>
-              <p class="about-intro">{{ t('about.intro') }}</p>
-
-              <!-- Journey Card -->
-              <div class="about-card">
-                <div class="card-icon">🚀</div>
-                <h3 class="card-title">{{ t('about.journey.title') }}</h3>
-                <p class="card-text">{{ t('about.journey.text') }}</p>
-              </div>
-
-              <!-- Approach Card -->
-              <div class="about-card">
-                <div class="card-icon">💡</div>
-                <h3 class="card-title">{{ t('about.approach.title') }}</h3>
-                <p class="card-text">{{ t('about.approach.text') }}</p>
-              </div>
+          <!-- Section Header - Simplified -->
+          <div class="about-header">
+            <div class="section-label">
+              <span class="label-dot"></span>
+              <span class="label-text">{{ t('about.title') }}</span>
+              <span class="label-dot"></span>
             </div>
-
-            <!-- Right Column: Skills & CV -->
-            <div class="about-sidebar">
-              <!-- Value Proposition Card -->
-              <div class="value-card">
-                <h3 class="value-title">{{ t('about.value.title') }}</h3>
-                <ul class="value-list">
-                  <li v-for="(item, index) in valueItems" :key="index" class="value-item">
-                    <svg class="check-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                      <polyline points="20 6 9 17 4 12"/>
-                    </svg>
-                    <span>{{ item }}</span>
-                  </li>
-                </ul>
-              </div>
-
-              <!-- CV Download Card -->
-              <div class="cv-card">
-                <div class="cv-header">
-                  <svg class="cv-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                    <polyline points="14 2 14 8 20 8"/>
-                    <line x1="16" y1="13" x2="8" y2="13"/>
-                    <line x1="16" y1="17" x2="8" y2="17"/>
-                    <polyline points="10 9 9 9 8 9"/>
-                  </svg>
-                  <h3 class="cv-title">{{ t('about.cv.title') }}</h3>
-                </div>
-                <p class="cv-description">{{ t('about.cv.download') }}</p>
-                <div class="cv-buttons">
-                  <a 
-                    href="/CV2025-ES.pdf" 
-                    download="Rodrigo_Frende_CV_ES.pdf"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="cv-button cv-button-primary"
-                  >
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                      <polyline points="7 10 12 15 17 10"/>
-                      <line x1="12" y1="15" x2="12" y2="3"/>
-                    </svg>
-                    <span>{{ t('about.cv.spanish') }}</span>
-                  </a>
-                  <a 
-                    href="/CV2025-EN.pdf" 
-                    download="Rodrigo_Frende_CV_EN.pdf"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="cv-button cv-button-secondary"
-                  >
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                      <polyline points="7 10 12 15 17 10"/>
-                      <line x1="12" y1="15" x2="12" y2="3"/>
-                    </svg>
-                    <span>{{ t('about.cv.english') }}</span>
-                  </a>
-                </div>
-              </div>
-            </div>
+            <h2 class="section-title-modern">{{ t('about.headline') }}</h2>
+            <p class="section-description">{{ t('about.intro') }}</p>
           </div>
+          
+          <!-- Interactive Carousel Component -->
+          <AboutCarousel />
         </div>
       </section>
     </ScrollReveal>
@@ -943,9 +847,7 @@ onUnmounted(() => {
   min-height: 100vh;
   display: flex;
   align-items: center;
-  background: rgba(15, 12, 41, 0.4);
-  backdrop-filter: blur(0px) brightness(1.05);
-  -webkit-backdrop-filter: blur(0px) brightness(1.05);
+  background: transparent;
   color: white;
   position: relative;
   overflow: hidden;
@@ -1256,9 +1158,7 @@ onUnmounted(() => {
   z-index: 2;
   width: 100%;
   min-height: 400px;
-  background: rgba(20, 18, 38, 0.35);
-  backdrop-filter: blur(8px) brightness(1.02);
-  -webkit-backdrop-filter: blur(8px) brightness(1.02);
+  background: transparent;
   padding: 5rem 0;
   overflow: hidden;
 }
@@ -1276,10 +1176,10 @@ onUnmounted(() => {
   position: absolute;
   width: 4px;
   height: 4px;
-  background: radial-gradient(circle, rgba(102, 126, 234, 0.8) 0%, rgba(167, 139, 250, 0.4) 50%, transparent 70%);
+  background: radial-gradient(circle, rgba(167, 139, 250, 0.7) 0%, rgba(167, 139, 250, 0.35) 50%, transparent 70%);
   border-radius: 50%;
   animation: particle-float-terminal 4s ease-in-out infinite;
-  box-shadow: 0 0 10px rgba(102, 126, 234, 0.5);
+  box-shadow: 0 0 10px rgba(167, 139, 250, 0.4);
   will-change: transform, opacity;
   transform: translateZ(0);
   backface-visibility: hidden;
@@ -1307,7 +1207,7 @@ onUnmounted(() => {
 
 .line {
   position: absolute;
-  background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.4), transparent);
+  background: linear-gradient(90deg, transparent, rgba(167, 139, 250, 0.3), transparent);
   height: 2px;
   animation: line-pulse 3s ease-in-out infinite;
   will-change: opacity, transform;
@@ -1327,7 +1227,7 @@ onUnmounted(() => {
   left: 0;
   right: 0;
   animation-delay: 1s;
-  background: linear-gradient(90deg, transparent, rgba(167, 139, 250, 0.3), transparent);
+  background: linear-gradient(90deg, transparent, rgba(167, 139, 250, 0.25), transparent);
 }
 
 .line-3 {
@@ -1335,7 +1235,7 @@ onUnmounted(() => {
   left: 0;
   right: 0;
   animation-delay: 2s;
-  background: linear-gradient(90deg, transparent, rgba(236, 72, 153, 0.3), transparent);
+  background: linear-gradient(90deg, transparent, rgba(167, 139, 250, 0.2), transparent);
 }
 
 @keyframes line-pulse {
@@ -1357,29 +1257,28 @@ onUnmounted(() => {
   height: auto;
   min-height: 320px;
   flex-shrink: 0;
-  background: rgba(13, 17, 23, 0.95);
+  background: rgba(13, 17, 23, 0.9);
   border-radius: 20px;
   overflow: hidden;
   z-index: 100;
   box-shadow: 
-    0 20px 80px rgba(0, 0, 0, 0.6),
-    0 0 0 1px rgba(102, 126, 234, 0.3),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1),
-    0 0 60px rgba(102, 126, 234, 0.2);
+    0 20px 80px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(167, 139, 250, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
   font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', 'Courier New', monospace;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   margin: 0 auto;
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
 }
 
 .code-terminal:hover {
   transform: translateY(-8px) scale(1.02);
   box-shadow: 
-    0 30px 100px rgba(0, 0, 0, 0.7),
-    0 0 0 1px rgba(102, 126, 234, 0.5),
-    inset 0 1px 0 rgba(255, 255, 255, 0.15),
-    0 0 80px rgba(102, 126, 234, 0.4);
+    0 30px 100px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(167, 139, 250, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 0 60px rgba(167, 139, 250, 0.25);
 }
 
 /* Terminal Glow Effect */
@@ -1389,7 +1288,7 @@ onUnmounted(() => {
   left: -50%;
   width: 200%;
   height: 200%;
-  background: radial-gradient(circle, rgba(102, 126, 234, 0.15) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(167, 139, 250, 0.12) 0%, transparent 70%);
   animation: glow-pulse 4s ease-in-out infinite;
   pointer-events: none;
   z-index: 0;
@@ -1407,12 +1306,12 @@ onUnmounted(() => {
 }
 
 .terminal-header {
-  background: linear-gradient(to bottom, rgba(45, 45, 45, 0.9), rgba(26, 26, 26, 0.9));
+  background: linear-gradient(to bottom, rgba(45, 45, 45, 0.8), rgba(26, 26, 26, 0.8));
   padding: 14px 20px;
   display: flex;
   align-items: center;
   gap: 16px;
-  border-bottom: 1px solid rgba(102, 126, 234, 0.2);
+  border-bottom: 1px solid rgba(167, 139, 250, 0.15);
   position: relative;
   backdrop-filter: blur(10px);
   z-index: 1;
@@ -1425,7 +1324,7 @@ onUnmounted(() => {
   left: 0;
   right: 0;
   height: 1px;
-  background: linear-gradient(to right, transparent, rgba(102, 126, 234, 0.4), transparent);
+  background: linear-gradient(to right, transparent, rgba(167, 139, 250, 0.3), transparent);
 }
 
 .terminal-buttons {
@@ -1520,7 +1419,7 @@ onUnmounted(() => {
 
 .terminal-body {
   padding: 28px;
-  background: rgba(13, 17, 23, 0.95);
+  background: rgba(13, 17, 23, 0.9);
   min-height: 220px;
   position: relative;
   display: flex;
@@ -1536,7 +1435,7 @@ onUnmounted(() => {
   left: 0;
   right: 0;
   height: 1px;
-  background: linear-gradient(to right, transparent, rgba(102, 126, 234, 0.2), transparent);
+  background: linear-gradient(to right, transparent, rgba(167, 139, 250, 0.15), transparent);
 }
 
 .code-lines-container {
@@ -1621,7 +1520,7 @@ onUnmounted(() => {
   gap: 24px;
   padding-top: 16px;
   margin-top: 16px;
-  border-top: 1px solid rgba(102, 126, 234, 0.15);
+  border-top: 1px solid rgba(167, 139, 250, 0.1);
 }
 
 .footer-stat {
@@ -1632,21 +1531,21 @@ onUnmounted(() => {
   font-size: 0.8rem;
   font-weight: 500;
   padding: 6px 12px;
-  background: rgba(102, 126, 234, 0.08);
+  background: rgba(167, 139, 250, 0.08);
   border-radius: 8px;
-  border: 1px solid rgba(102, 126, 234, 0.15);
+  border: 1px solid rgba(167, 139, 250, 0.12);
   transition: all 0.3s ease;
 }
 
 .footer-stat:hover {
-  background: rgba(102, 126, 234, 0.15);
-  border-color: rgba(102, 126, 234, 0.3);
+  background: rgba(167, 139, 250, 0.12);
+  border-color: rgba(167, 139, 250, 0.25);
   color: rgba(255, 255, 255, 0.9);
   transform: translateY(-2px);
 }
 
 .footer-stat svg {
-  color: #667eea;
+  color: #a78bfa;
 }
 
 /* Decorative Elements */
@@ -1681,8 +1580,8 @@ onUnmounted(() => {
   width: 80px;
   height: 80px;
   border-radius: 50%;
-  border: 2px solid rgba(102, 126, 234, 0.2);
-  background: radial-gradient(circle, rgba(102, 126, 234, 0.1) 0%, transparent 70%);
+  border: 2px solid rgba(167, 139, 250, 0.15);
+  background: radial-gradient(circle, rgba(167, 139, 250, 0.08) 0%, transparent 70%);
   animation: deco-pulse 3s ease-in-out infinite;
 }
 
@@ -1721,12 +1620,12 @@ onUnmounted(() => {
   position: relative;
   width: 100%;
   max-width: 600px;
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.03);
   border-radius: 24px;
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
   padding: 3.5rem;
-  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.25);
   animation: showcase-fade-in 1s ease-out;
   margin: 0 auto;
   height: fit-content;
@@ -1765,10 +1664,10 @@ onUnmounted(() => {
 }
 
 .tech-item {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.03);
   border-radius: 10px;
   padding: 0.9rem;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.06);
   transition: all 0.3s ease;
   animation: tech-item-slide-in 0.6s ease-out var(--delay);
   animation-fill-mode: both;
@@ -1783,9 +1682,10 @@ onUnmounted(() => {
 }
 
 .tech-item:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(167, 139, 250, 0.25);
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 8px 25px rgba(167, 139, 250, 0.15);
 }
 
 .tech-header {
@@ -1987,15 +1887,17 @@ onUnmounted(() => {
   flex: 1;
   text-align: center;
   padding: 1rem 0.5rem;
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.03);
   border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.06);
   transition: all 0.3s ease;
 }
 
 .stat-card:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(167, 139, 250, 0.25);
   transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(167, 139, 250, 0.15);
 }
 
 .stat-icon {
@@ -2375,34 +2277,21 @@ onUnmounted(() => {
   font-weight: 700;
   text-align: center;
   margin-bottom: 3rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #ffffff 0%, #a78bfa 50%, #c084fc 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  text-shadow: 0 0 40px rgba(167, 139, 250, 0.3);
 }
 
-/* About Section */
+/* ===================================
+   ABOUT SECTION - MODERN DESIGN
+   =================================== */
 .about-section {
   padding: 5rem 0;
-  background: rgba(30, 28, 50, 0.3);
-  backdrop-filter: blur(10px) brightness(0.98);
-  -webkit-backdrop-filter: blur(10px) brightness(0.98);
+  background: transparent;
   position: relative;
   overflow: hidden;
-}
-
-.about-section::after {
-  content: '';
-  position: absolute;
-  top: 10%;
-  right: -10%;
-  width: 500px;
-  height: 500px;
-  background: radial-gradient(circle, rgba(102, 126, 234, 0.08) 0%, transparent 70%);
-  border-radius: 50%;
-  filter: blur(80px);
-  pointer-events: none;
-  z-index: 0;
 }
 
 .about-section .container {
@@ -2410,13 +2299,59 @@ onUnmounted(() => {
   z-index: 2;
 }
 
-/* About Section Connecting Particles */
+/* Animated Background */
+.about-background {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+}
+
+/* Gradient orbs - Subtle and unified */
+.about-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(100px);
+  opacity: 0.15;
+  animation: float-orb-about 40s ease-in-out infinite;
+  will-change: transform;
+  pointer-events: none;
+}
+
+.about-orb-1 {
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(167, 139, 250, 0.25) 0%, transparent 70%);
+  top: -10%;
+  right: -5%;
+  animation-delay: 0s;
+}
+
+.about-orb-2 {
+  width: 380px;
+  height: 380px;
+  background: radial-gradient(circle, rgba(167, 139, 250, 0.2) 0%, transparent 70%);
+  bottom: -10%;
+  left: -5%;
+  animation-delay: 15s;
+}
+
+@keyframes float-orb-about {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    transform: translate(60px, -40px) scale(1.1);
+  }
+  66% {
+    transform: translate(-40px, 40px) scale(0.95);
+  }
+}
+
+/* Floating particles */
 .about-particles {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 200px;
+  inset: 0;
   pointer-events: none;
   z-index: 1;
   overflow: hidden;
@@ -2453,34 +2388,67 @@ onUnmounted(() => {
   }
 }
 
-.about-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 2.5rem;
-  margin-top: 3rem;
+/* Section Header */
+.about-header {
+  text-align: center;
+  margin-bottom: 4rem;
   max-width: 900px;
   margin-left: auto;
   margin-right: auto;
 }
 
-/* Left Column */
-.about-main {
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
+.section-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.625rem 1.5rem;
+  background: rgba(124, 58, 237, 0.1);
+  border: 1px solid rgba(124, 58, 237, 0.3);
+  border-radius: 50px;
+  margin-bottom: 2rem;
+  backdrop-filter: blur(10px);
 }
 
-.about-headline {
-  font-size: clamp(1.75rem, 4vw, 2.5rem);
-  font-weight: 700;
-  line-height: 1.3;
-  background: linear-gradient(135deg, #a78bfa 0%, #ec4899 50%, #667eea 100%);
+.label-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #a78bfa 0%, #c084fc 100%);
+  box-shadow: 0 0 12px rgba(167, 139, 250, 0.6);
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+@keyframes pulse-dot {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(1.2);
+  }
+}
+
+.label-text {
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.section-title-modern {
+  font-size: clamp(2.25rem, 5vw, 3.5rem);
+  font-weight: 800;
+  line-height: 1.2;
+  background: linear-gradient(135deg, #ffffff 0%, #a78bfa 50%, #c084fc 100%);
+  background-size: 200% 200%;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  margin-bottom: 1rem;
   animation: gradient-shift 8s ease infinite;
-  background-size: 200% 200%;
+  margin-bottom: 1.5rem;
+  text-shadow: 0 0 40px rgba(167, 139, 250, 0.3);
 }
 
 @keyframes gradient-shift {
@@ -2488,221 +2456,234 @@ onUnmounted(() => {
   50% { background-position: 100% 50%; }
 }
 
-.about-intro {
-  font-size: 1.125rem;
+.section-description {
+  font-size: 1.1875rem;
   line-height: 1.8;
   color: rgba(255, 255, 255, 0.8);
-  margin-bottom: 1.5rem;
+  max-width: 750px;
+  margin: 0 auto;
 }
 
-.about-card {
-  background: rgba(255, 255, 255, 0.05);
+/* Main Grid - 2 Symmetric Columns */
+.about-grid-modern {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.75rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Column Container */
+.about-column {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+
+/* Info Cards (Journey & Approach) */
+.info-card {
+  background: rgba(255, 255, 255, 0.03);
   border-radius: 20px;
   padding: 2rem;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  transition: all 0.3s ease;
+  height: fit-content;
 }
 
-.about-card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 12px 40px rgba(102, 126, 234, 0.3);
-  border-color: rgba(167, 139, 250, 0.4);
-  background: rgba(255, 255, 255, 0.08);
+.info-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(167, 139, 250, 0.25);
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow: 0 8px 30px rgba(167, 139, 250, 0.2);
 }
 
-.card-icon {
-  font-size: 2.5rem;
-  margin-bottom: 1rem;
-  filter: drop-shadow(0 4px 8px rgba(167, 139, 250, 0.5));
-  display: inline-block;
+.info-card-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
 }
 
-.card-title {
+.info-icon {
+  font-size: 2rem;
+  filter: drop-shadow(0 2px 8px rgba(167, 139, 250, 0.4));
+}
+
+.info-title {
   font-size: 1.5rem;
   font-weight: 700;
   color: #ffffff;
-  margin-bottom: 1rem;
+  line-height: 1.2;
 }
 
-.card-text {
-  font-size: 1.0625rem;
-  line-height: 1.8;
-  color: rgba(255, 255, 255, 0.75);
+.info-text {
+  font-size: 1rem;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.8);
 }
 
-/* Right Sidebar */
-.about-sidebar {
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-}
-
-/* Value Card */
-.value-card {
-  background: rgba(255, 255, 255, 0.05);
+/* Skills Card */
+.skills-card {
+  background: rgba(255, 255, 255, 0.03);
   border-radius: 20px;
   padding: 2rem;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  transition: all 0.4s ease;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  transition: all 0.3s ease;
 }
 
-.value-card:hover {
-  box-shadow: 0 12px 40px rgba(102, 126, 234, 0.3);
-  border-color: rgba(167, 139, 250, 0.4);
-  background: rgba(255, 255, 255, 0.08);
+.skills-card:hover {
   transform: translateY(-4px);
+  border-color: rgba(167, 139, 250, 0.25);
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow: 0 8px 30px rgba(167, 139, 250, 0.2);
 }
 
-.value-title {
+.skills-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.skills-icon {
+  font-size: 1.5rem;
+  filter: drop-shadow(0 2px 8px rgba(167, 139, 250, 0.4));
+}
+
+.skills-title {
   font-size: 1.375rem;
   font-weight: 700;
   color: #ffffff;
-  margin-bottom: 1.5rem;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
+  line-height: 1.2;
 }
 
-.value-title::before {
-  content: '✨';
-  font-size: 1.5rem;
-  filter: drop-shadow(0 2px 6px rgba(167, 139, 250, 0.6));
-}
-
-.value-list {
+.skills-list {
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 1.125rem;
+  gap: 0.75rem;
 }
 
-.value-item {
+.skill-item {
   display: flex;
   align-items: flex-start;
-  gap: 0.875rem;
-  font-size: 1rem;
+  gap: 0.75rem;
+  padding: 0.625rem 0.75rem;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 8px;
+  font-size: 0.9375rem;
+  line-height: 1.6;
   color: rgba(255, 255, 255, 0.85);
-  line-height: 1.7;
-  transition: all 0.3s ease;
-  padding: 0.5rem 0;
+  transition: all 0.2s ease;
 }
 
-.value-item:hover {
-  color: rgba(255, 255, 255, 1);
+.skill-item:hover {
+  background: rgba(255, 255, 255, 0.05);
   transform: translateX(4px);
+  color: rgba(255, 255, 255, 1);
 }
 
-.check-icon {
+.skill-check {
   flex-shrink: 0;
   color: #a78bfa;
-  margin-top: 3px;
-  filter: drop-shadow(0 2px 4px rgba(167, 139, 250, 0.4));
+  margin-top: 2px;
 }
 
-/* CV Download Card */
-.cv-card {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+/* CV Card Compact */
+.cv-card-compact {
+  background: linear-gradient(135deg, #7c3aed 0%, #60a5fa 100%);
   border-radius: 20px;
   padding: 2rem;
-  color: white;
-  box-shadow: 0 12px 40px rgba(102, 126, 234, 0.4);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  transition: all 0.4s ease;
+  box-shadow: 0 8px 30px rgba(124, 58, 237, 0.35);
+  transition: all 0.3s ease;
 }
 
-.cv-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 16px 48px rgba(102, 126, 234, 0.5);
+.cv-card-compact:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(124, 58, 237, 0.45);
 }
 
-.cv-header {
+.cv-header-compact {
   display: flex;
   align-items: center;
-  gap: 0.875rem;
-  margin-bottom: 1.125rem;
-}
-
-.cv-icon {
-  flex-shrink: 0;
-  filter: drop-shadow(0 2px 6px rgba(255, 255, 255, 0.3));
-}
-
-.cv-title {
-  font-size: 1.375rem;
-  font-weight: 700;
+  gap: 1rem;
+  margin-bottom: 1rem;
   color: white;
 }
 
-.cv-description {
-  font-size: 1rem;
+.cv-header-compact svg {
+  flex-shrink: 0;
+}
+
+.cv-header-compact h3 {
+  font-size: 1.375rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.cv-desc-compact {
+  font-size: 0.9375rem;
   color: rgba(255, 255, 255, 0.95);
-  margin-bottom: 1.75rem;
-  line-height: 1.7;
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
 }
 
-.cv-buttons {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
+.cv-buttons-compact {
+  display: flex;
+  gap: 0.75rem;
 }
 
-.cv-button {
+.cv-btn-compact {
+  flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.625rem;
-  padding: 1rem 1.25rem;
-  border-radius: 12px;
+  gap: 0.5rem;
+  padding: 0.875rem 1rem;
+  border-radius: 10px;
   font-weight: 600;
-  font-size: 0.9375rem;
+  font-size: 0.875rem;
   text-decoration: none;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  border: 2px solid transparent;
+  transition: all 0.3s ease;
 }
 
-.cv-button svg {
+.cv-btn-compact svg {
+  width: 16px;
+  height: 16px;
   flex-shrink: 0;
-  width: 20px;
-  height: 20px;
 }
 
-.cv-button-primary {
+.cv-btn-es {
   background: white;
-  color: #667eea;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  color: #7c3aed;
 }
 
-.cv-button-primary:hover {
-  background: #f8fafc;
-  transform: translateY(-3px) scale(1.02);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+.cv-btn-es:hover {
+  background: #f3f4f6;
+  transform: translateY(-2px);
 }
 
-.cv-button-secondary {
+.cv-btn-en {
   background: rgba(255, 255, 255, 0.2);
   color: white;
-  border-color: rgba(255, 255, 255, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.3);
   backdrop-filter: blur(10px);
 }
 
-.cv-button-secondary:hover {
+.cv-btn-en:hover {
   background: rgba(255, 255, 255, 0.3);
-  border-color: rgba(255, 255, 255, 0.6);
-  transform: translateY(-3px) scale(1.02);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: translateY(-2px);
 }
 
 /* Projects Section */
 .projects-section {
   padding: 5rem 0;
-  background: rgba(35, 33, 54, 0.28);
-  backdrop-filter: blur(12px) brightness(0.96);
-  -webkit-backdrop-filter: blur(12px) brightness(0.96);
+  background: transparent;
   position: relative;
   overflow: hidden;
 }
@@ -2712,11 +2693,12 @@ onUnmounted(() => {
   position: absolute;
   bottom: 10%;
   left: -10%;
-  width: 500px;
-  height: 500px;
-  background: radial-gradient(circle, rgba(167, 139, 250, 0.08) 0%, transparent 70%);
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(167, 139, 250, 0.1) 0%, transparent 70%);
   border-radius: 50%;
-  filter: blur(80px);
+  filter: blur(100px);
+  opacity: 0.8;
   pointer-events: none;
   z-index: 0;
 }
@@ -2729,29 +2711,29 @@ onUnmounted(() => {
 .projects-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-  gap: 2.5rem;
-  margin-top: 3rem;
+  gap: 2rem;
+  margin-top: 2.5rem;
 }
 
 .project-card {
-  background: rgba(255, 255, 255, 0.04);
+  background: rgba(255, 255, 255, 0.03);
   border-radius: 20px;
   overflow: hidden;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.06);
   height: 100%;
   display: flex;
   flex-direction: column;
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
 }
 
 .project-card:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 16px 48px rgba(102, 126, 234, 0.3);
-  border-color: rgba(167, 139, 250, 0.4);
-  background: rgba(255, 255, 255, 0.06);
+  transform: translateY(-8px);
+  box-shadow: 0 16px 48px rgba(167, 139, 250, 0.25);
+  border-color: rgba(167, 139, 250, 0.3);
+  background: rgba(255, 255, 255, 0.05);
 }
 
 /* Project Image Wrapper */
@@ -3318,37 +3300,83 @@ div.project-tech > span {
 
 /* Contact Section */
 .contact-section {
-  background: linear-gradient(135deg, rgba(102, 126, 234, 0.85) 0%, rgba(118, 75, 162, 0.85) 100%);
-  backdrop-filter: blur(15px) brightness(1.1);
-  -webkit-backdrop-filter: blur(15px) brightness(1.1);
+  background: linear-gradient(
+    135deg,
+    rgba(167, 139, 250, 0.08) 0%,
+    rgba(139, 92, 246, 0.12) 50%,
+    rgba(167, 139, 250, 0.08) 100%
+  );
   color: white;
   padding: 5rem 0 2rem;
   position: relative;
   overflow: hidden;
+  border-top: 1px solid rgba(167, 139, 250, 0.15);
+  box-shadow: 0 -20px 60px rgba(167, 139, 250, 0.1);
 }
 
 .contact-section .container {
   position: relative;
-  z-index: 1;
+  z-index: 2;
+}
+
+/* Contact Section Background Effects */
+.contact-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -30%;
+  width: 60%;
+  height: 100%;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(167, 139, 250, 0.15) 0%,
+    transparent 60%
+  );
+  filter: blur(80px);
+  opacity: 0.6;
+  z-index: 0;
+}
+
+.contact-section::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: -30%;
+  width: 60%;
+  height: 100%;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(192, 132, 252, 0.12) 0%,
+    transparent 60%
+  );
+  filter: blur(80px);
+  opacity: 0.6;
+  z-index: 0;
 }
 
 .contact-content {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 4rem;
-  margin-bottom: 3rem;
+  gap: 3rem;
+  margin-bottom: 2.5rem;
 }
 
 .contact-info h3 {
-  font-size: 1.8rem;
+  font-size: 1.75rem;
+  font-weight: 700;
   margin-bottom: 1rem;
+  background: linear-gradient(135deg, #ffffff 0%, #a78bfa 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .contact-info p {
-  font-size: 1.1rem;
-  opacity: 0.9;
+  font-size: 1.0625rem;
+  opacity: 0.85;
   margin-bottom: 2rem;
-  line-height: 1.6;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.8);
 }
 
 .contact-methods {
@@ -3361,17 +3389,21 @@ div.project-tech > span {
   display: flex;
   align-items: center;
   gap: 1rem;
-  padding: 1rem;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 8px;
+  padding: 1.25rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
   text-decoration: none;
   color: white;
   transition: all 0.3s ease;
+  backdrop-filter: blur(20px);
 }
 
 .contact-method:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(167, 139, 250, 0.35);
   transform: translateX(5px);
+  box-shadow: 0 4px 20px rgba(167, 139, 250, 0.25);
 }
 
 .method-icon {
@@ -3390,8 +3422,13 @@ div.project-tech > span {
 }
 
 .social-links h3 {
-  font-size: 1.8rem;
+  font-size: 1.75rem;
+  font-weight: 700;
   margin-bottom: 1rem;
+  background: linear-gradient(135deg, #ffffff 0%, #a78bfa 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .social-grid {
@@ -3404,17 +3441,21 @@ div.project-tech > span {
   display: flex;
   align-items: center;
   gap: 1rem;
-  padding: 1rem;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 8px;
+  padding: 1.25rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
   text-decoration: none;
   color: white;
   transition: all 0.3s ease;
+  backdrop-filter: blur(20px);
 }
 
 .social-link:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(167, 139, 250, 0.35);
   transform: translateX(5px);
+  box-shadow: 0 4px 20px rgba(167, 139, 250, 0.25);
 }
 
 .social-icon {
@@ -3425,7 +3466,8 @@ div.project-tech > span {
 .footer-bottom {
   text-align: center;
   padding-top: 2rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  margin-top: 2rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
   opacity: 0.8;
 }
 
@@ -3723,20 +3765,11 @@ div.project-tech > span {
 
 }
 
-/* Desktop - 2 column layout for about section */
+/* Desktop - 2 Column Symmetric Layout */
 @media (min-width: 1024px) {
-  .about-grid {
-    grid-template-columns: 1.4fr 1fr;
-    gap: 3rem;
-    max-width: 1200px;
-  }
-
-  .about-headline {
-    text-align: left;
-  }
-
-  .about-intro {
-    text-align: left;
+  .about-grid-modern {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
   }
 }
 
@@ -3857,71 +3890,54 @@ div.project-tech > span {
   }
 
   .about-section {
-    padding: 3.5rem 0;
+    padding: 5rem 0;
   }
 
-  .about-grid {
-    grid-template-columns: 1fr;
-    gap: 2rem;
-    margin-top: 2rem;
+  .about-header {
+    margin-bottom: 3.5rem;
   }
 
-  .about-headline {
-    font-size: clamp(1.5rem, 5vw, 2rem);
-    text-align: center;
+  .section-title-modern {
+    font-size: clamp(2rem, 5vw, 2.75rem);
   }
 
-  .about-intro {
-    text-align: center;
+  .section-description {
     font-size: 1.0625rem;
   }
 
-  .about-sidebar {
-    position: static;
+  .about-grid-modern {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
   }
 
-  .about-card {
-    padding: 1.5rem;
+  .about-column {
+    gap: 1.5rem;
   }
 
-  .card-icon {
-    font-size: 2.25rem;
-  }
-
-  .card-title {
-    font-size: 1.375rem;
-  }
-
-  .card-text {
-    font-size: 1rem;
-  }
-
-  .value-card,
-  .cv-card {
+  .info-card,
+  .skills-card,
+  .cv-card-compact {
     padding: 1.75rem;
   }
 
-  .value-title {
-    font-size: 1.25rem;
+  .info-title {
+    font-size: 1.375rem;
   }
 
-  .value-item {
+  .info-text {
     font-size: 0.9375rem;
   }
 
-  .cv-buttons {
-    grid-template-columns: 1fr;
-    gap: 0.875rem;
+  .skills-title {
+    font-size: 1.25rem;
   }
 
-  .cv-button {
-    padding: 1rem 1.25rem;
-    font-size: 1rem;
+  .skill-item {
+    font-size: 0.875rem;
   }
 
-  .cv-button svg {
-    width: 20px;
-    height: 20px;
+  .cv-header-compact h3 {
+    font-size: 1.25rem;
   }
 
   .projects-section {
@@ -4096,56 +4112,91 @@ div.project-tech > span {
   }
 
   .about-section {
-    padding: 2.5rem 0;
+    padding: 4rem 0;
   }
 
-  .about-grid {
-    gap: 1.5rem;
-    margin-top: 1.5rem;
+  .about-header {
+    margin-bottom: 3rem;
   }
 
-  .about-headline {
-    font-size: clamp(1.375rem, 5vw, 1.75rem);
+  .section-label {
+    padding: 0.5rem 1.25rem;
+    font-size: 0.8125rem;
   }
 
-  .about-intro {
+  .section-title-modern {
+    font-size: clamp(1.75rem, 5vw, 2.25rem);
+  }
+
+  .section-description {
     font-size: 1rem;
   }
 
-  .about-card,
-  .value-card,
-  .cv-card {
-    padding: 1.25rem;
+  .about-grid-modern {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
   }
 
-  .card-title {
+  .about-column {
+    gap: 1.25rem;
+  }
+
+  .info-card,
+  .skills-card,
+  .cv-card-compact {
+    padding: 1.5rem;
+  }
+
+  .info-icon {
+    font-size: 1.75rem;
+  }
+
+  .info-title {
     font-size: 1.25rem;
   }
 
-  .card-text {
-    font-size: 0.9375rem;
+  .info-text {
+    font-size: 0.875rem;
   }
 
-  .value-title {
+  .skills-icon {
+    font-size: 1.375rem;
+  }
+
+  .skills-title {
     font-size: 1.125rem;
   }
 
-  .value-item {
+  .skill-item {
+    font-size: 0.8125rem;
+    padding: 0.5rem 0.625rem;
+  }
+
+  .cv-header-compact {
+    gap: 0.75rem;
+  }
+
+  .cv-header-compact svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  .cv-header-compact h3 {
+    font-size: 1.125rem;
+  }
+
+  .cv-desc-compact {
     font-size: 0.875rem;
+  }
+
+  .cv-buttons-compact {
+    flex-direction: column;
     gap: 0.625rem;
   }
 
-  .cv-title {
-    font-size: 1.125rem;
-  }
-
-  .cv-description {
-    font-size: 0.9375rem;
-  }
-
-  .cv-button {
-    padding: 0.875rem 1rem;
-    font-size: 0.9375rem;
+  .cv-btn-compact {
+    font-size: 0.8125rem;
+    padding: 0.75rem 0.875rem;
   }
 
   .hero-title {
@@ -4409,4 +4460,5 @@ div.project-tech > span {
   }
 }
 </style>
+
 

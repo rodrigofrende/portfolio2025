@@ -11,6 +11,12 @@ const en = {
     title: 'Frontend Developer',
     titleAccent: 'who creates',
     titleHighlight: 'memorable experiences',
+    rotatingPhrases: [
+      'memorable experiences',
+      'scalable applications',
+      'pixel-perfect interfaces',
+      'innovative solutions'
+    ] as const,
     cta: {
       viewWork: 'See My Work',
       letsTalk: 'Let\'s Talk'
@@ -34,8 +40,8 @@ const en = {
   },
   about: {
     title: 'About Me',
-    headline: 'Frontend Developer with a passion for creating exceptional digital experiences',
-    intro: 'I\'m Rodrigo, a Frontend Developer specialized in Vue.js, React, and TypeScript. My focus is on transforming complex ideas into intuitive and visually impactful interfaces that users truly enjoy using.',
+    headline: 'Building exceptional web experiences',
+    intro: 'I transform complex ideas into intuitive and visually impactful interfaces that users truly enjoy.',
     journey: {
       title: 'My Journey',
       text: 'With over 6 years of experience in web development, I\'ve worked in both software factories and product companies, covering very diverse projects with clients from different industries. From sports management platforms to 3D model e-commerce, this journey through all web technologies has taught me to adapt quickly. I\'m constantly learning and improving, always seeking new ways to solve problems and create better experiences.'
@@ -51,7 +57,7 @@ const en = {
         'Deployment and integration with AWS, Azure, Firebase, and serverless architectures',
         'Responsive interface design with CSS3, Tailwind, and smooth animations',
         'Working with agile methodologies (SCRUM) and building functional requirements',
-        'Performance optimization and accessibility best practices (a11y)',
+        'Performance optimization and accessibility best practices',
         'Proactive error detection and critical architecture analysis',
         'Results-oriented mindset and attention to detail'
       ] as const
