@@ -32,7 +32,7 @@ const en = {
       },
       satisfaction: {
         number: '100%',
-        label: 'Client Satisfaction'
+        label: 'Innovator'
       }
     },
     poweredBy: 'Powered by',
@@ -71,6 +71,8 @@ const en = {
   },
   projects: {
     title: 'My Projects',
+    headline: 'Standout projects',
+    subtitle: 'A selection of projects that reflect my focus on quality and performance. Many were born to solve real-world daily problems.',
     items: [
       {
         title: 'E-commerce Platform',
@@ -95,11 +97,28 @@ const en = {
     ] as const,
     links: {
       github: 'GitHub',
-      demo: 'Demo'
+      demo: 'Live Demo'
+    },
+    badges: {
+      featured: 'Featured',
+      stable: 'Stable',
+      improving: 'Improving',
+      wip: 'WIP'
+    },
+    descriptions: {
+      1: 'Simplify your sports team management with a platform that centralizes schedules, players, and events. Allows multiple teams to manage their information independently, with real-time statistics and tracking.',
+      2: 'Complete tool designed to manage women\'s football teams. Simplifies attendance tracking, training and match organization, player performance monitoring, and results in a simple and efficient way.',
+      3: 'Specialized store to discover and purchase quality 3D models. Browse organized catalogs, filter by categories, and download files ready to print. Ideal for designers, makers, and 3D printing enthusiasts.',
+      4: 'Discover unique color palettes inspired by your favorite Pokémon. Creative tool that extracts color schemes directly from official sprites, helping designers and artists find inspiration for their projects.',
+      5: 'Collection of ready-to-use, well-documented interface components. Speed up your frontend development with proven, accessible, and customizable elements. Ideal for teams seeking consistency and speed.',
+      6: 'Make every achievement count with a visual counter that celebrates your goals. Set personal objectives, track your progress, and enjoy festive animations when you reach important milestones. Perfect for motivation and celebration.',
+      7: 'Find information about any movie quickly and intuitively. Instant searches, complete details, and smooth navigation. An experience designed for movie lovers who want to explore and discover new titles effortlessly.'
     }
   },
   contact: {
     title: 'Contact',
+    headline: 'Let\'s connect and create together',
+    subtitle: 'I\'m available to collaborate on new projects and opportunities.',
     heading: 'Let\'s work together!',
     description: 'I\'m always interested in new projects and opportunities. Don\'t hesitate to contact me if you have any ideas in mind.',
     email: {
@@ -113,7 +132,7 @@ const en = {
       instagram: 'Instagram'
     },
     footer: {
-      rights: 'Rodrigo Frende. All rights reserved.'
+      rights: 'Made with 💖 by Rodrigo Frende'
     }
   },
   ui: {

@@ -765,7 +765,7 @@ onUnmounted(() => {
   flex-direction: column;
   align-items: center;
   gap: 1.5rem;
-  margin-bottom: 3rem;
+  margin-bottom: 5rem;
   width: 100%;
   max-width: 1200px;
 }
@@ -783,6 +783,8 @@ onUnmounted(() => {
   width: 100%;
   overflow: hidden;
   position: relative;
+  padding-top: 8px; /* Space for hover effect */
+  padding-bottom: 8px;
   mask-image: linear-gradient(
     to right,
     transparent,

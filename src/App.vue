@@ -15,36 +15,17 @@ const { t } = useI18n()
 const currentRole = ref('')
 const currentCodeLine = ref('')
 const roles = [ 'Frontend Developer', 'UI/UX Designer', 'Tech Enthusiast', '3D Maker',]
-const codeLines = [
-  'npm create vite@latest portfolio -- --template vue-ts',
-  'git commit -m "feat: add interactive portfolio with animations"',
-  'pnpm build && firebase deploy --only hosting',
-  'await Promise.all(projects.map(p => optimize(p)))',
-  'const experience = years * passion * dedication',
-  'export default defineComponent({ name: "Innovation" })'
-]
+
+// Terminal removed for performance
 let roleIndex = 0
 let codeIndex = 0
 let roleInterval: number | undefined
 let codeInterval: number | undefined
 
-// Terminal particles - generated once to avoid re-renders
-const terminalParticles = ref<Array<{ left: string; top: string; delay: string; duration: string }>>([])
-const aboutParticles = ref<Array<{ left: string; delay: string; duration: string }>>([])
+// Terminal typing removed
 
-// Generate particles once
-const generateTerminalParticles = () => {
-  const particles = []
-  for (let i = 0; i < 20; i++) {
-    particles.push({
-      left: `${Math.random() * 100}%`,
-      top: `${Math.random() * 100}%`,
-      delay: `${Math.random() * 3}s`,
-      duration: `${3 + Math.random() * 2}s`
-    })
-  }
-  return particles
-}
+// About particles - generated once to avoid re-renders
+const aboutParticles = ref<Array<{ left: string; delay: string; duration: string }>>([])
 
 const generateAboutParticles = () => {
   const particles = []
@@ -107,6 +88,8 @@ let tagId = 0
 const projects = computed(() => {
   return realProjects.map((project) => ({
     ...project,
+    // Use translated description from i18n
+    description: t(`projects.descriptions.${project.id}` as any),
     // Generate automatic screenshot URL
     imageUrl: getBestProjectImage(project)
   }))
@@ -224,26 +207,7 @@ const typeRole = () => {
   }, 100)
 }
 
-const typeCode = () => {
-  const code = codeLines[codeIndex]
-  if (!code) return
-  
-  let i = 0
-  currentCodeLine.value = ''
-  
-  const typeInterval = setInterval(() => {
-    if (i < code.length) {
-      currentCodeLine.value += code[i]
-      i++
-    } else {
-      clearInterval(typeInterval)
-      setTimeout(() => {
-        codeIndex = (codeIndex + 1) % codeLines.length
-        typeCode()
-      }, 3000)
-    }
-  }, 50)
-}
+// typeCode removed along with terminal component
 
 // Particle effects - Generate once and cache
 const particleStyles = ref<Array<Record<string, string>>>([])
@@ -470,8 +434,7 @@ onMounted(() => {
   particleStyles.value = generateParticleStyles()
   avatarParticleStyles.value = generateAvatarParticleStyles()
   
-  // Generate terminal and about particles once
-  terminalParticles.value = generateTerminalParticles()
+  // Generate about particles once
   aboutParticles.value = generateAboutParticles()
   
   // Create animated text field
@@ -483,7 +446,6 @@ onMounted(() => {
   // Start typing animations
   setTimeout(() => {
     typeRole()
-    typeCode()
   }, 1000)
   
   // Add magnetic effects
@@ -510,125 +472,7 @@ onUnmounted(() => {
     <!-- New Hero Section -->
     <HeroSection id="home" />
 
-    <!-- Terminal Transition Element -->
-    <div class="terminal-transition">
-      <!-- Floating particles around terminal -->
-      <div class="terminal-particles">
-        <div v-for="(particle, i) in terminalParticles" :key="i" class="terminal-particle" :style="{
-          left: particle.left,
-          top: particle.top,
-          animationDelay: particle.delay,
-          animationDuration: particle.duration
-        }"></div>
-      </div>
-      
-      <!-- Connection lines -->
-      <div class="connection-lines">
-        <div class="line line-1"></div>
-        <div class="line line-2"></div>
-        <div class="line line-3"></div>
-      </div>
-      
-      <div class="code-terminal">
-        <!-- Glow effect -->
-        <div class="terminal-glow"></div>
-        
-        <div class="terminal-header">
-          <div class="terminal-buttons">
-            <span class="btn-close"></span>
-            <span class="btn-minimize"></span>
-            <span class="btn-maximize"></span>
-          </div>
-          <span class="terminal-title">~/portfolio/dev</span>
-          <div class="terminal-status">
-            <span class="status-dot"></span>
-            <span class="status-text">Connected</span>
-          </div>
-        </div>
-        <div class="terminal-body">
-          <!-- Multiple code lines with syntax highlighting -->
-          <div class="code-lines-container">
-            <div class="code-line">
-              <span class="line-number">1</span>
-              <span class="code-keyword">import</span>
-              <span class="code-punctuation"> { </span>
-              <span class="code-variable">creativity</span>
-              <span class="code-punctuation">,</span>
-              <span class="code-variable"> innovation</span>
-              <span class="code-punctuation"> } </span>
-              <span class="code-keyword">from</span>
-              <span class="code-string"> '@rodrigo/portfolio'</span>
-              <span class="code-punctuation">;</span>
-            </div>
-            <div class="code-line">
-              <span class="line-number">2</span>
-              <span class="code-keyword">const</span>
-              <span class="code-variable"> projects</span>
-              <span class="code-operator"> = </span>
-              <span class="code-keyword">await</span>
-              <span class="code-variable"> fetchProjects</span>
-              <span class="code-punctuation">(</span>
-              <span class="code-string">"featured"</span>
-              <span class="code-punctuation">);</span>
-            </div>
-            <div class="code-line">
-              <span class="line-number">3</span>
-              <span class="code-keyword">const</span>
-              <span class="code-variable"> passion</span>
-              <span class="code-operator"> = </span>
-              <span class="code-variable">code</span>
-              <span class="code-operator"> + </span>
-              <span class="code-variable">design</span>
-              <span class="code-operator"> * </span>
-              <span class="code-variable">perfection</span>
-              <span class="code-punctuation">;</span>
-            </div>
-            <div class="code-line code-line-active">
-              <span class="line-number">4</span>
-              <span class="code-prompt">$</span>
-              <span class="code-text typing-code">{{ currentCodeLine }}</span>
-              <span class="cursor">|</span>
-            </div>
-            <div class="code-line code-comment">
-              <span class="line-number">5</span>
-              <span class="code-comment-text">// Crafting digital experiences that inspire ✨</span>
-            </div>
-          </div>
-          
-          <!-- Terminal footer with stats -->
-          <div class="terminal-footer">
-            <div class="footer-stat">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
-              </svg>
-              <span>Projects: 8+</span>
-            </div>
-            <div class="footer-stat">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="12" cy="12" r="10"/>
-                <polyline points="12 6 12 12 16 14"/>
-              </svg>
-              <span>Active</span>
-            </div>
-            <div class="footer-stat">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-                <polyline points="22 4 12 14.01 9 11.01"/>
-              </svg>
-              <span>Ready</span>
-            </div>
-          </div>
-        </div>
-      </div>
-      
-      <!-- Decorative elements -->
-      <div class="terminal-decoration terminal-decoration-1">
-        <div class="deco-circle"></div>
-      </div>
-      <div class="terminal-decoration terminal-decoration-2">
-        <div class="deco-square"></div>
-      </div>
-    </div>
+    <!-- Terminal removed for performance -->
 
     <!-- About Section - Modern Design -->
     <ScrollReveal :delay="100">
@@ -671,7 +515,15 @@ onUnmounted(() => {
     <ScrollReveal :delay="150">
       <section id="projects" class="projects-section">
         <div class="container">
-          <h2 class="section-title">{{ t('projects.title') }}</h2>
+          <div class="about-header">
+            <div class="section-label">
+              <span class="label-dot"></span>
+              <span class="label-text">{{ t('projects.title') }}</span>
+              <span class="label-dot"></span>
+            </div>
+            <h2 class="section-title-modern">{{ t('projects.headline') }}</h2>
+            <p class="section-description">{{ t('projects.subtitle') }}</p>
+          </div>
         <div class="projects-grid">
           <div class="project-card" v-for="project in projects" :key="project.id">
             <div class="project-image-wrapper">
@@ -697,7 +549,7 @@ onUnmounted(() => {
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
                   </svg>
-                  <span>Featured</span>
+                  <span>{{ t('projects.badges.featured') }}</span>
                 </div>
                 
                 <!-- Stable Badge -->
@@ -705,7 +557,7 @@ onUnmounted(() => {
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                     <polyline points="20 6 9 17 4 12"/>
                   </svg>
-                  <span>Stable</span>
+                  <span>{{ t('projects.badges.stable') }}</span>
                 </div>
                 
                 <!-- Improving Badge -->
@@ -714,7 +566,7 @@ onUnmounted(() => {
                     <line x1="12" y1="19" x2="12" y2="5"/>
                     <polyline points="5 12 12 5 19 12"/>
                   </svg>
-                  <span>Improving</span>
+                  <span>{{ t('projects.badges.improving') }}</span>
                 </div>
                 
                 <!-- Work in Progress Badge -->
@@ -723,7 +575,7 @@ onUnmounted(() => {
                     <circle cx="12" cy="12" r="10"/>
                     <polyline points="12 6 12 12 16 14"/>
                   </svg>
-                  <span>WIP</span>
+                  <span>{{ t('projects.badges.wip') }}</span>
                 </div>
               </div>
             </div>
@@ -741,7 +593,7 @@ onUnmounted(() => {
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
                   </svg>
-                  <span>GitHub</span>
+                  <span>{{ t('projects.links.github') }}</span>
                 </a>
                 <a v-if="project.demo && project.demo !== '#'" :href="project.demo" target="_blank" rel="noopener noreferrer" class="project-link project-link-primary">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -749,7 +601,7 @@ onUnmounted(() => {
                     <polyline points="15 3 21 3 21 9"/>
                     <line x1="10" y1="14" x2="21" y2="3"/>
                   </svg>
-                  <span>Live Demo</span>
+                  <span>{{ t('projects.links.demo') }}</span>
                 </a>
               </div>
             </div>
@@ -763,51 +615,46 @@ onUnmounted(() => {
     <ScrollReveal :delay="200">
       <footer id="contact" class="contact-section">
         <div class="container">
-          <h2 class="section-title">{{ t('contact.title') }}</h2>
-        <div class="contact-content">
-          <div class="contact-info">
-            <h3>{{ t('contact.heading') }}</h3>
-            <p>{{ t('contact.description') }}</p>
-            <div class="contact-methods">
-              <a href="mailto:rodrigo.frende@gmail.com" class="contact-method">
-                <div class="method-icon">📧</div>
-                <div class="method-info">
-                  <span class="method-label">{{ t('contact.email.label') }}</span>
-                  <span class="method-value">{{ t('contact.email.value') }}</span>
-                </div>
-              </a>
+          <div class="about-header">
+            <div class="section-label">
+              <span class="label-dot"></span>
+              <span class="label-text">{{ t('contact.title') }}</span>
+              <span class="label-dot"></span>
             </div>
+            <h2 class="section-title-modern">{{ t('contact.headline') }}</h2>
+            <p class="section-description">{{ t('contact.subtitle') }}</p>
           </div>
-          <div class="social-links">
-            <h3>{{ t('contact.social.title') }}</h3>
-            <div class="social-grid">
-              <a href="https://github.com/rodrigofrende" target="_blank" class="social-link">
-                <div class="social-icon">
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-                  </svg>
-                </div>
-                <span>{{ t('contact.social.github') }}</span>
-              </a>
-              <a href="https://linkedin.com/in/rodrigofrende" target="_blank" class="social-link">
-                <div class="social-icon">
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
-                  </svg>
-                </div>
-                <span>{{ t('contact.social.linkedin') }}</span>
-              </a>
-              <a href="https://instagram.com/rf.3d.prints" target="_blank" class="social-link">
-                <div class="social-icon">
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
-                  </svg>
-                </div>
-                <span>{{ t('contact.social.instagram') }}</span>
-              </a>
-            </div>
+          <h3 class="contact-heading-full">{{ t('contact.heading') }}</h3>
+          <div class="contact-grid">
+            <a href="https://github.com/rodrigofrende" target="_blank" class="contact-method contact-card">
+              <div class="method-icon">🐱</div>
+              <div class="method-info">
+                <span class="method-label">{{ t('contact.social.github') }}</span>
+                <span class="method-value">github.com/rodrigofrende</span>
+              </div>
+            </a>
+            <a href="https://linkedin.com/in/rodrigofrende" target="_blank" class="contact-method contact-card">
+              <div class="method-icon">in</div>
+              <div class="method-info">
+                <span class="method-label">{{ t('contact.social.linkedin') }}</span>
+                <span class="method-value">/in/rodrigofrende</span>
+              </div>
+            </a>
+            <a href="https://instagram.com/rf.3d.prints" target="_blank" class="contact-method contact-card">
+              <div class="method-icon">📸</div>
+              <div class="method-info">
+                <span class="method-label">{{ t('contact.social.instagram') }}</span>
+                <span class="method-value">@rf.3d.prints</span>
+              </div>
+            </a>
+            <a href="mailto:rodrigo.frende@gmail.com" class="contact-method contact-card">
+              <div class="method-icon">📧</div>
+              <div class="method-info">
+                <span class="method-label">{{ t('contact.email.label') }}</span>
+                <span class="method-value">{{ t('contact.email.value') }}</span>
+              </div>
+            </a>
           </div>
-        </div>
         <div class="footer-bottom">
           <p>&copy; {{ new Date().getFullYear() }} {{ t('contact.footer.rights') }}</p>
         </div>
@@ -1250,17 +1097,19 @@ onUnmounted(() => {
 }
 
 /* Code Terminal */
+/* Mobile-first base */
 .code-terminal {
   position: relative;
-  width: 800px;
-  max-width: 90%;
-  height: auto;
-  min-height: 320px;
+  width: 100%;
+  max-width: 360px;
+  height: 280px; /* mobile default */
   flex-shrink: 0;
   background: rgba(13, 17, 23, 0.9);
   border-radius: 20px;
   overflow: hidden;
   z-index: 100;
+  display: flex; /* allow header/body layout without clipping */
+  flex-direction: column;
   box-shadow: 
     0 20px 80px rgba(0, 0, 0, 0.4),
     0 0 0 1px rgba(167, 139, 250, 0.2),
@@ -1273,7 +1122,7 @@ onUnmounted(() => {
 }
 
 .code-terminal:hover {
-  transform: translateY(-8px) scale(1.02);
+  transform: translateY(-8px) scale(1.01);
   box-shadow: 
     0 30px 100px rgba(0, 0, 0, 0.5),
     0 0 0 1px rgba(167, 139, 250, 0.35),
@@ -1418,14 +1267,30 @@ onUnmounted(() => {
 }
 
 .terminal-body {
-  padding: 28px;
+  padding: 16px; /* tighter on mobile */
   background: rgba(13, 17, 23, 0.9);
-  min-height: 220px;
   position: relative;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   z-index: 1;
+  flex: 1 1 auto; /* fill available height under header */
+  min-height: 0; /* prevent overflow from flex calculations */
+  background-image:
+    radial-gradient(circle at 20% 10%, rgba(88, 166, 255, 0.06), transparent 40%),
+    radial-gradient(circle at 80% 90%, rgba(167, 139, 250, 0.06), transparent 40%),
+    linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+  background-size:
+    100% 100%,
+    100% 100%,
+    24px 24px,
+    24px 24px;
+  background-position:
+    0 0,
+    0 0,
+    0 0,
+    0 0;
 }
 
 .terminal-body::before {
@@ -1442,31 +1307,57 @@ onUnmounted(() => {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  /* Use variables for exact line height across breakpoints */
+  --line-h: 24px;
+  --lines: 5;
+  --gap: 6px;
+  height: calc(var(--line-h) * var(--lines) + var(--gap) * (var(--lines) - 1));
+  overflow: hidden;
 }
 
 .code-line {
   display: flex;
   align-items: center;
   gap: 16px;
-  font-size: 0.95rem;
+  font-size: 0.9rem; /* mobile base */
   line-height: 1.6;
   padding: 4px 0;
+  min-height: var(--line-h); /* keep line height stable to avoid jumps */
+  will-change: contents; /* hint for smoother text updates */
   transition: all 0.3s ease;
+  overflow: hidden; /* avoid text spill */
 }
 
 .code-line-active {
   background: rgba(88, 166, 255, 0.08);
-  border-left: 3px solid #58a6ff;
-  padding-left: 12px;
-  margin-left: -12px;
+  /* visual left accent without affecting layout */
+  box-shadow: inset 3px 0 0 0 #58a6ff;
 }
 
 .line-number {
   color: rgba(255, 255, 255, 0.3);
-  font-size: 0.85rem;
-  min-width: 20px;
+  font-size: 0.8rem;
+  min-width: 18px;
   text-align: right;
   user-select: none;
+}
+
+/* Upscale terminal for larger screens (desktop-first adjustments on top of mobile base) */
+@media (min-width: 1280px) {
+  .code-terminal {
+    max-width: 800px;
+    height: 360px;
+  }
+  .terminal-body { padding: 24px; }
+  .code-lines-container { --line-h: 28px; --gap: 8px; }
+  .code-line { font-size: 0.95rem; }
+}
+
+@media (min-width: 1536px) {
+  .code-terminal {
+    max-width: 860px;
+    height: 380px;
+  }
 }
 
 .code-keyword {
@@ -1512,6 +1403,7 @@ onUnmounted(() => {
   font-weight: 400;
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
   letter-spacing: 0.3px;
+  white-space: pre; /* prevent wrapping while typing */
 }
 
 /* Terminal Footer */
@@ -2288,7 +2180,7 @@ onUnmounted(() => {
    ABOUT SECTION - MODERN DESIGN
    =================================== */
 .about-section {
-  padding: 5rem 0;
+  padding: 4rem 0;
   background: transparent;
   position: relative;
   overflow: hidden;
@@ -2682,7 +2574,7 @@ onUnmounted(() => {
 
 /* Projects Section */
 .projects-section {
-  padding: 5rem 0;
+  padding: 3.5rem 0;
   background: transparent;
   position: relative;
   overflow: hidden;
@@ -2708,11 +2600,25 @@ onUnmounted(() => {
   z-index: 1;
 }
 
+/* Unify header spacing across all sections */
+.about-section .about-header,
+.projects-section .about-header,
+.contact-section .about-header {
+  margin-bottom: 3rem;
+}
+
+.about-section .section-description,
+.projects-section .section-description,
+.contact-section .section-description {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
 .projects-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-  gap: 2rem;
-  margin-top: 2.5rem;
+  gap: 1.5rem;
+  margin-top: 2rem;
 }
 
 .project-card {
@@ -3319,6 +3225,38 @@ div.project-tech > span {
   z-index: 2;
 }
 
+.contact-heading-full {
+  text-align: center;
+  font-size: clamp(1.25rem, 2.5vw, 1.75rem);
+  font-weight: 600;
+  margin: 2rem 0 2rem;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.contact-subtitle {
+  text-align: center;
+  margin-bottom: 0;
+}
+
+.contact-grid {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+@media (min-width: 640px) {
+  .contact-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .contact-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
 /* Contact Section Background Effects */
 .contact-section::before {
   content: '';
@@ -3389,36 +3327,58 @@ div.project-tech > span {
   display: flex;
   align-items: center;
   gap: 1rem;
-  padding: 1.25rem;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 12px;
+  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 20px;
   text-decoration: none;
   color: white;
-  transition: all 0.3s ease;
-  backdrop-filter: blur(20px);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  height: 100%;
 }
 
 .contact-method:hover {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(167, 139, 250, 0.35);
-  transform: translateX(5px);
-  box-shadow: 0 4px 20px rgba(167, 139, 250, 0.25);
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(167, 139, 250, 0.3);
+  transform: translateY(-4px);
+  box-shadow: 0 16px 48px rgba(167, 139, 250, 0.25);
 }
 
 .method-icon {
-  font-size: 1.5rem;
+  font-size: 1.75rem;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  background: rgba(167, 139, 250, 0.1);
+  border-radius: 12px;
+  border: 1px solid rgba(167, 139, 250, 0.2);
+}
+
+.method-info {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 0.25rem;
 }
 
 .method-label {
   display: block;
   font-weight: 600;
-  margin-bottom: 0.25rem;
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.95);
 }
 
 .method-value {
   display: block;
-  opacity: 0.8;
+  font-size: 0.875rem;
+  opacity: 0.75;
+  color: rgba(255, 255, 255, 0.7);
 }
 
 .social-links h3 {
@@ -3705,7 +3665,7 @@ div.project-tech > span {
   
   .code-terminal {
     width: 700px;
-    min-height: 280px;
+    height: 340px;
   }
   
   .terminal-footer {
@@ -3746,7 +3706,7 @@ div.project-tech > span {
   
   .code-terminal {
     width: 650px;
-    min-height: 260px;
+    height: 320px;
   }
   
   .terminal-transition {
@@ -3816,7 +3776,7 @@ div.project-tech > span {
   .code-terminal {
     width: 100%;
     max-width: 500px;
-    min-height: 280px;
+    height: 310px;
     margin: 0 auto;
   }
   
@@ -3890,7 +3850,7 @@ div.project-tech > span {
   }
 
   .about-section {
-    padding: 5rem 0;
+    padding: 4rem 0;
   }
 
   .about-header {
@@ -3941,7 +3901,7 @@ div.project-tech > span {
   }
 
   .projects-section {
-    padding: 4rem 0;
+    padding: 2.5rem 0;
   }
 
   .projects-grid {
@@ -4026,11 +3986,7 @@ div.project-tech > span {
     right: 5%;
   }
 
-  .code-terminal {
-    width: 250px;
-    top: 10px;
-    right: 10px;
-  }
+  /* remove stray absolute override on small layouts for terminal */
 
   .profile-avatar {
     width: 150px;
@@ -4112,7 +4068,7 @@ div.project-tech > span {
   }
 
   .about-section {
-    padding: 4rem 0;
+    padding: 3.5rem 0;
   }
 
   .about-header {
@@ -4230,7 +4186,7 @@ div.project-tech > span {
   }
 
   .projects-section {
-    padding: 3rem 0;
+    padding: 2rem 0;
   }
 
   .projects-grid {
@@ -4309,7 +4265,13 @@ div.project-tech > span {
 
   .code-terminal {
     max-width: 360px;
-    min-height: 240px;
+    height: 280px;
+  }
+
+  /* Smaller line height on very small devices */
+  .code-lines-container {
+    --line-h: 26px;
+    --gap: 6px;
   }
 
   .terminal-header {
