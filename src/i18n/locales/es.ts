@@ -112,7 +112,8 @@ const es = {
       4: 'Descubre paletas de colores únicas inspiradas en tus Pokémon favoritos. Herramienta creativa que extrae esquemas de color directamente de los sprites oficiales, ayudando a diseñadores y artistas a encontrar inspiración para sus proyectos.',
       5: 'Colección de componentes de interfaz listos para usar y bien documentados. Acelera tu desarrollo frontend con elementos probados, accesibles y personalizables. Ideal para equipos que buscan consistencia y velocidad en sus proyectos.',
       6: 'Haz que cada logro cuente con un contador visual que celebra tus metas. Establece objetivos personales, sigue tu progreso y disfruta de animaciones festivas cuando alcanzas hitos importantes. Perfecto para motivar y celebrar éxitos.',
-      7: 'Encuentra información de cualquier película de forma rápida e intuitiva. Búsquedas instantáneas, detalles completos y navegación fluida. Una experiencia diseñada para cinéfilos que quieren explorar y descubrir nuevos títulos sin complicaciones.'
+      7: 'Encuentra información de cualquier película de forma rápida e intuitiva. Búsquedas instantáneas, detalles completos y navegación fluida. Una experiencia diseñada para cinéfilos que quieren explorar y descubrir nuevos títulos sin complicaciones.',
+      8: 'Organiza sorteos en vivo con overlays y animaciones pensados para streaming. Gestiona participantes con chances personalizadas, ejecuta múltiples ganadores y mantiene la información persistida para retomar el evento cuando quieras.'
     }
   },
   contact: {

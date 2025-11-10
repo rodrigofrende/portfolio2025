@@ -112,7 +112,8 @@ const en = {
       4: 'Discover unique color palettes inspired by your favorite Pokémon. Creative tool that extracts color schemes directly from official sprites, helping designers and artists find inspiration for their projects.',
       5: 'Collection of ready-to-use, well-documented interface components. Speed up your frontend development with proven, accessible, and customizable elements. Ideal for teams seeking consistency and speed.',
       6: 'Make every achievement count with a visual counter that celebrates your goals. Set personal objectives, track your progress, and enjoy festive animations when you reach important milestones. Perfect for motivation and celebration.',
-      7: 'Find information about any movie quickly and intuitively. Instant searches, complete details, and smooth navigation. An experience designed for movie lovers who want to explore and discover new titles effortlessly.'
+      7: 'Find information about any movie quickly and intuitively. Instant searches, complete details, and smooth navigation. An experience designed for movie lovers who want to explore and discover new titles effortlessly.',
+      8: 'Run live raffles with overlays and animations crafted for streaming. Manage participants with weighted chances, pick multiple winners instantly, and keep everything persisted to resume the event anytime.'
     }
   },
   contact: {

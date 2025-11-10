@@ -84,6 +84,17 @@ export const realProjects: readonly Project[] = [
     icon: '🎬',
     featured: true,
     stable: true
+  },
+  {
+    id: 8,
+    title: 'RF Lottery',
+    description: 'Aplicación de sorteos en vivo para comunidades y creadores de contenido. Permite cargar participantes con chances personalizadas, realizar múltiples sorteos al instante y anunciar ganadores con animaciones y overlays listos para streaming.',
+    technologies: ['React', 'TypeScript', 'Vite', 'Tailwind CSS'] as const,
+    github: 'https://github.com/rodrigofrende/rf-lottery',
+    demo: 'https://rf-lottery.vercel.app',
+    icon: '🎟️',
+    stable: true,
+    featured: true
   }
 ] as const
 
@@ -91,27 +102,18 @@ export const realProjects: readonly Project[] = [
 export const getProjectScreenshot = (projectUrl?: string, fallback: string = ''): string => {
   if (!projectUrl || projectUrl === '#') return fallback
   
-  // Microlink API - Screenshot gratuito
   return `https://api.microlink.io/?url=${encodeURIComponent(projectUrl)}&screenshot=true&meta=false&embed=screenshot.url`
 }
 
-// Función para obtener Open Graph image de GitHub
 export const getGithubSocialImage = (githubUrl: string): string => {
   const match = githubUrl.match(/github\.com\/([^/]+)\/([^/]+)/)
   if (!match) return ''
   
   const [, owner, repo] = match
-  // GitHub genera automáticamente estas imágenes
   return `https://opengraph.githubassets.com/1/${owner}/${repo}`
 }
 
-// Función para obtener la mejor imagen disponible
 export const getBestProjectImage = (project: Project): string => {
-  // Prioridad:
-  // 1. Screenshot del demo (si existe)
-  // 2. GitHub Social Card
-  // 3. Placeholder con gradiente
-  
   if (project.demo && project.demo !== '#') {
     return getProjectScreenshot(project.demo)
   }
@@ -120,7 +122,6 @@ export const getBestProjectImage = (project: Project): string => {
     return getGithubSocialImage(project.github)
   }
   
-  // Fallback a gradiente basado en el ID
   const gradients = [
     'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
     'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',

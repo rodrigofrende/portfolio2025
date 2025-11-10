@@ -11,25 +11,16 @@ import { realProjects, getBestProjectImage } from './data/projects'
 
 const { t } = useI18n()
 
-// Reactive data
 const currentRole = ref('')
-const currentCodeLine = ref('')
 const roles = [ 'Frontend Developer', 'UI/UX Designer', 'Tech Enthusiast', '3D Maker',]
 
-// Terminal removed for performance
 let roleIndex = 0
-let codeIndex = 0
 let roleInterval: number | undefined
-let codeInterval: number | undefined
 
-// Terminal typing removed
-
-// About particles - generated once to avoid re-renders
 const aboutParticles = ref<Array<{ left: string; delay: string; duration: string }>>([])
 
 const generateAboutParticles = () => {
   const particles = []
-  // Reduced from 15 to 6 for better performance
   for (let i = 0; i < 6; i++) {
     particles.push({
       left: `${10 + Math.random() * 80}%`,
@@ -40,13 +31,12 @@ const generateAboutParticles = () => {
   return particles
 }
 
-// Modern particle field
 const particleField = ref<HTMLElement>()
 const mousePosition = ref({ x: 0, y: 0 })
 const fieldWidth = ref(400)
 const fieldHeight = ref(400)
+const isHeroVisible = ref(true)
 
-// Floating text elements
 const floatingTexts = ref<Array<{
   id: number
   x: number
@@ -59,7 +49,6 @@ const floatingTexts = ref<Array<{
   originalY: number
 }>>([])
 
-// Tech tags
 const techTags = ref<Array<{
   id: number
   x: number
@@ -68,7 +57,6 @@ const techTags = ref<Array<{
   opacity: number
 }>>([])
 
-// Typing animation
 const typingText = ref('')
 const typingIndex = ref(0)
 const typingSpeed = ref(100)
@@ -81,69 +69,58 @@ const typingMessages = [
 
 let textId = 0
 let tagId = 0
+let animationFrameId: number | null = null
+let lastAnimationTime = 0
+const TARGET_FRAME_INTERVAL = 1000 / 30
+let mouseMoveAttached = false
+let heroObserver: IntersectionObserver | null = null
+let lastMouseUpdate = 0
 
-// Tech stack data moved to HeroSection component
-
-// Real projects data from GitHub repos
 const projects = computed(() => {
   return realProjects.map((project) => ({
     ...project,
-    // Use translated description from i18n
     description: t(`projects.descriptions.${project.id}` as any),
-    // Generate automatic screenshot URL
     imageUrl: getBestProjectImage(project)
   }))
 })
 
-// Navigation methods moved to ModernHeader component
-
-// Tech icon mapping function
 const getTechIcon = (tech: string): string => {
   const iconMap: Record<string, string> = {
-    // Frontend Frameworks
     'Vue.js': '💚',
     'React': '⚛️',
     'Angular': '🅰️',
     'Svelte': '🔥',
     
-    // Languages
     'TypeScript': '💙',
     'JavaScript': '💛',
     'Python': '🐍',
     'Java': '☕',
     
-    // Build Tools
     'Vite': '⚡',
     'Webpack': '📦',
     'Rollup': '📦',
     
-    // State Management
     'Pinia': '🍍',
     'Redux': '🔄',
     'Vuex': '📦',
     
-    // Styling
     'Tailwind CSS': '🎨',
     'CSS3': '🎨',
     'SASS': '🎨',
     'CSS Modules': '🎨',
     
-    // Backend & Database
     'Firebase': '🔥',
     'Node.js': '🟢',
     'MongoDB': '🍃',
     
-    // APIs & Services
     'PokeAPI': '🎮',
     'OMDb API': '🎬',
     'API Integration': '🔌',
     
-    // Testing
     'Jest': '🃏',
     'Playwright': '🎭',
     'Vitest': '✅',
     
-    // Tools & Libraries
     'Storybook': '📚',
     'Canvas API': '🖼️',
     'Web Audio API': '🔊',
@@ -151,18 +128,15 @@ const getTechIcon = (tech: string): string => {
     'Chart.js': '📊',
     'GSAP': '✨',
     
-    // Default
     'default': '🔧'
   }
   
   return iconMap[tech] || '🔧'
 }
 
-// Get tech class name for styling
 const getTechClass = (tech: string): string => {
   const normalizedTech = tech.toLowerCase().replace(/\s+/g, '-').replace(/\./g, '')
   
-  // Map specific technologies to simplified class names
   const classMap: Record<string, string> = {
     'react': 'tech-react',
     'vuejs': 'tech-vue',
@@ -185,7 +159,6 @@ const getTechClass = (tech: string): string => {
   return classMap[normalizedTech] || 'tech-default'
 }
 
-// Typing animations
 const typeRole = () => {
   const role = roles[roleIndex]
   if (!role) return
@@ -207,9 +180,6 @@ const typeRole = () => {
   }, 100)
 }
 
-// typeCode removed along with terminal component
-
-// Particle effects - Generate once and cache
 const particleStyles = ref<Array<Record<string, string>>>([])
 
 const generateParticleStyles = () => {
@@ -233,7 +203,6 @@ const generateParticleStyles = () => {
   return styles
 }
 
-// Avatar particle styles - Generate once and cache
 const avatarParticleStyles = ref<Array<Record<string, string>>>([])
 
 const generateAvatarParticleStyles = () => {
@@ -252,7 +221,6 @@ const generateAvatarParticleStyles = () => {
   return styles
 }
 
-// Text field functions
 const createFloatingTexts = () => {
   const texts = [
     { text: 'Vue.js', type: 'framework' },
@@ -302,7 +270,6 @@ const createTechTags = () => {
 
 const updateFloatingTexts = () => {
   floatingTexts.value.forEach(textElement => {
-    // Mouse interaction - subtle attraction
     const dx = mousePosition.value.x - textElement.x
     const dy = mousePosition.value.y - textElement.y
     const distance = Math.sqrt(dx * dx + dy * dy)
@@ -311,24 +278,19 @@ const updateFloatingTexts = () => {
       const force = (100 - distance) / 100
       const angle = Math.atan2(dy, dx)
       
-      // Subtle movement towards mouse
       textElement.x += Math.cos(angle) * force * 0.3
       textElement.y += Math.sin(angle) * force * 0.3
       
-      // Increase opacity and scale when near mouse
       textElement.opacity = Math.min(1, textElement.opacity + force * 0.2)
       textElement.scale = Math.min(1.2, textElement.scale + force * 0.1)
     } else {
-      // Return to original position slowly
       textElement.x += (textElement.originalX - textElement.x) * 0.01
       textElement.y += (textElement.originalY - textElement.y) * 0.01
       
-      // Reset opacity and scale
       textElement.opacity = Math.max(0.3, textElement.opacity - 0.01)
       textElement.scale = Math.max(1, textElement.scale - 0.01)
     }
     
-    // Keep texts within bounds
     textElement.x = Math.max(0, Math.min(fieldWidth.value, textElement.x))
     textElement.y = Math.max(0, Math.min(fieldHeight.value, textElement.y))
   })
@@ -336,15 +298,12 @@ const updateFloatingTexts = () => {
 
 const updateTechTags = () => {
   techTags.value.forEach(tag => {
-    // Random floating movement
     tag.x += (Math.random() - 0.5) * 0.2
     tag.y += (Math.random() - 0.5) * 0.2
     
-    // Keep tags within bounds
     tag.x = Math.max(0, Math.min(fieldWidth.value, tag.x))
     tag.y = Math.max(0, Math.min(fieldHeight.value, tag.y))
     
-    // Subtle opacity animation
     tag.opacity += (Math.random() - 0.5) * 0.02
     tag.opacity = Math.max(0.2, Math.min(0.7, tag.opacity))
   })
@@ -352,6 +311,12 @@ const updateTechTags = () => {
 
 
 const handleMouseMove = (e: MouseEvent) => {
+  if (!isHeroVisible.value) return
+  
+  const now = performance.now()
+  if (now - lastMouseUpdate < 50) return
+  lastMouseUpdate = now
+  
   const rect = particleField.value?.getBoundingClientRect()
   if (rect) {
     mousePosition.value = {
@@ -391,20 +356,58 @@ const startTypingAnimation = () => {
   typeNextMessage()
 }
 
-const startAnimation = () => {
-  const animate = () => {
+const animateFrame = (timestamp: number) => {
+  if (!isHeroVisible.value) {
+    animationFrameId = null
+    return
+  }
+
+  if (timestamp - lastAnimationTime >= TARGET_FRAME_INTERVAL) {
     updateFloatingTexts()
     updateTechTags()
-    requestAnimationFrame(animate)
+    lastAnimationTime = timestamp
   }
-  animate()
+  
+  animationFrameId = requestAnimationFrame(animateFrame)
 }
 
-// getTechIcon function moved to HeroSection component
+const startAnimation = () => {
+  if (animationFrameId !== null) return
+  lastAnimationTime = 0
+  animationFrameId = requestAnimationFrame(animateFrame)
+}
 
+const stopAnimation = () => {
+  if (animationFrameId !== null) {
+    cancelAnimationFrame(animationFrameId)
+    animationFrameId = null
+  }
+}
 
+const enableMouseTracking = () => {
+  if (mouseMoveAttached) return
+  window.addEventListener('mousemove', handleMouseMove)
+  mouseMoveAttached = true
+}
 
-// Magnetic button effect
+const disableMouseTracking = () => {
+  if (!mouseMoveAttached) return
+  window.removeEventListener('mousemove', handleMouseMove)
+  mouseMoveAttached = false
+}
+
+const handleHeroVisibility = (visible: boolean) => {
+  isHeroVisible.value = visible
+  if (visible) {
+    startAnimation()
+    enableMouseTracking()
+  } else {
+    disableMouseTracking()
+    stopAnimation()
+    lastMouseUpdate = 0
+  }
+}
+
 const addMagneticEffect = () => {
   const magneticBtns = document.querySelectorAll('.magnetic-btn')
   
@@ -428,36 +431,49 @@ const addMagneticEffect = () => {
 
 // Lifecycle
 onMounted(() => {
-  window.addEventListener('mousemove', handleMouseMove)
-  
-  // Generate particle styles once
   particleStyles.value = generateParticleStyles()
   avatarParticleStyles.value = generateAvatarParticleStyles()
   
-  // Generate about particles once
   aboutParticles.value = generateAboutParticles()
   
-  // Create animated text field
   createFloatingTexts()
   createTechTags()
   startTypingAnimation()
   startAnimation()
+  enableMouseTracking()
   
-  // Start typing animations
+  const heroElement = document.getElementById('home')
+  if (heroElement) {
+    heroObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          handleHeroVisibility(entry.isIntersecting)
+        })
+      },
+      {
+        threshold: 0.25
+      }
+    )
+    heroObserver.observe(heroElement)
+  }
+  
   setTimeout(() => {
     typeRole()
   }, 1000)
   
-  // Add magnetic effects
   setTimeout(() => {
     addMagneticEffect()
   }, 500)
 })
 
 onUnmounted(() => {
-  window.removeEventListener('mousemove', handleMouseMove)
+  disableMouseTracking()
+  stopAnimation()
   if (roleInterval !== undefined) clearInterval(roleInterval)
-  if (codeInterval !== undefined) clearInterval(codeInterval)
+  if (heroObserver) {
+    heroObserver.disconnect()
+    heroObserver = null
+  }
 })
 </script>
 
