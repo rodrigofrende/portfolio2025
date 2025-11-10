@@ -200,34 +200,56 @@ onUnmounted(() => {
 
       <!-- Quick stats/highlights -->
       <div class="hero-stats fade-in-up" style="animation-delay: 1s">
-        <div class="stat-item">
-          <div class="stat-icon">⚡</div>
-          <div class="stat-content">
-            <div class="stat-number">{{ t('hero.stats.experience.number') }}</div>
-            <div class="stat-label">{{ t('hero.stats.experience.label') }}</div>
+        <div class="stats-grid">
+          <div class="stat-block">
+            <div class="stat-badge">
+              <span class="stat-icon">⚡</span>
+              <span class="stat-tag">{{ t('hero.stats.experience.tag') }}</span>
             </div>
-        </div>
-
-        <div class="stat-divider"></div>
-        
-        <div class="stat-item">
-          <div class="stat-icon">🚀</div>
-          <div class="stat-content">
-            <div class="stat-number">{{ t('hero.stats.projects.number') }}</div>
-            <div class="stat-label">{{ t('hero.stats.projects.label') }}</div>
-          </div>
-        </div>
-
-        <div class="stat-divider"></div>
-        
-        <div class="stat-item">
-          <div class="stat-icon">💎</div>
-          <div class="stat-content">
-            <div class="stat-number">{{ t('hero.stats.satisfaction.number') }}</div>
-            <div class="stat-label">{{ t('hero.stats.satisfaction.label') }}</div>
+            <div class="stat-info">
+              <div class="stat-meta">
+                <span class="stat-number">{{ t('hero.stats.experience.number') }}</span>
+                <span class="stat-subtext">{{ t('hero.stats.experience.label') }}</span>
+              </div>
+              <div class="stat-bar">
+                <span class="stat-bar-fill" style="--fill: 0.82"></span>
+              </div>
             </div>
           </div>
+
+          <div class="stat-block">
+            <div class="stat-badge">
+              <span class="stat-icon">🚀</span>
+              <span class="stat-tag">{{ t('hero.stats.projects.tag') }}</span>
+            </div>
+            <div class="stat-info">
+              <div class="stat-meta">
+                <span class="stat-number">{{ t('hero.stats.projects.number') }}</span>
+                <span class="stat-subtext">{{ t('hero.stats.projects.label') }}</span>
+              </div>
+              <div class="stat-bar">
+                <span class="stat-bar-fill" style="--fill: 0.95"></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="stat-block">
+            <div class="stat-badge">
+              <span class="stat-icon">💎</span>
+              <span class="stat-tag">{{ t('hero.stats.satisfaction.tag') }}</span>
+            </div>
+            <div class="stat-info">
+              <div class="stat-meta">
+                <span class="stat-number">{{ t('hero.stats.satisfaction.number') }}</span>
+                <span class="stat-subtext">{{ t('hero.stats.satisfaction.label') }}</span>
+              </div>
+              <div class="stat-bar">
+                <span class="stat-bar-fill" style="--fill: 1"></span>
+              </div>
+            </div>
+          </div>
         </div>
+      </div>
 
       <!-- Tech stack preview with infinite carousel -->
       <div class="tech-stack-preview fade-in-up" style="animation-delay: 1.2s">
@@ -695,66 +717,179 @@ onUnmounted(() => {
   transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-/* ===================================
-   HERO STATS
-   =================================== */
 .hero-stats {
-  display: flex;
-  align-items: center;
-  gap: 2.5rem;
-  padding: 2.25rem 3rem;
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 20px;
-  margin-bottom: 3rem;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  padding: 2.5rem 2.75rem;
+  background:
+    radial-gradient(circle at 10% -10%, rgba(124, 58, 237, 0.25), transparent 45%),
+    radial-gradient(circle at 85% 15%, rgba(56, 189, 248, 0.18), transparent 50%),
+    rgba(16, 18, 48, 0.78);
+  border-radius: 26px;
+  border: 1px solid rgba(124, 58, 237, 0.22);
+  box-shadow:
+    0 28px 70px rgba(8, 8, 35, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(32px);
+  margin-bottom: 3.5rem;
 }
 
-.stat-item {
-  display: flex;
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 2rem;
+}
+
+.stat-block {
+  position: relative;
+  padding: 1.75rem;
+  border-radius: 20px;
+  background: linear-gradient(160deg, rgba(33, 35, 68, 0.6) 0%, rgba(22, 25, 58, 0.85) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 18px 35px rgba(15, 23, 42, 0.25);
+  overflow: hidden;
+  transition: transform 0.35s ease, box-shadow 0.35s ease, border-color 0.35s ease;
+  isolation: isolate;
+}
+
+.stat-block::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at top right, rgba(124, 58, 237, 0.22), transparent 55%);
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.stat-block::before {
+  content: '';
+  position: absolute;
+  inset: 1px;
+  border-radius: 18px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, rgba(12, 10, 32, 0.35) 85%);
+  z-index: -2;
+}
+
+.stat-block:hover {
+  transform: translateY(-6px);
+  border-color: rgba(124, 58, 237, 0.35);
+  box-shadow: 0 28px 55px rgba(76, 29, 149, 0.35);
+}
+
+.stat-block:hover::after {
+  opacity: 1;
+}
+
+.stat-badge {
+  display: inline-flex;
   align-items: center;
-  gap: 1rem;
+  gap: 0.75rem;
+  padding: 0.65rem 1.25rem;
+  border-radius: 999px;
+  background: linear-gradient(120deg, rgba(255, 255, 255, 0.08) 0%, rgba(124, 58, 237, 0.12) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(16px);
+  margin-bottom: 1.75rem;
+  position: relative;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15);
 }
 
 .stat-icon {
-  font-size: 2rem;
-  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.3));
+  font-size: 1.5rem;
+  filter: drop-shadow(0 8px 18px rgba(124, 58, 237, 0.4));
 }
 
-.stat-content {
-  text-align: left;
+.stat-tag {
+  font-size: 0.78rem;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+  color: rgba(235, 240, 255, 0.75);
+  font-weight: 600;
+}
+
+.stat-info {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+.stat-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
 .stat-number {
-  font-size: 1.75rem;
+  font-size: 2.25rem;
   font-weight: 800;
-  color: white;
   line-height: 1;
-  background: linear-gradient(135deg, #ffffff 0%, #a78bfa 100%);
+  background: linear-gradient(135deg, #ffffff 0%, #c4b5fd 55%, #6366f1 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  letter-spacing: -0.02em;
+}
+
+.stat-subtext {
+  font-size: 0.75rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: rgba(226, 232, 240, 0.7);
+  margin-top: 0.75rem;
+}
+
+.stat-bar {
+  position: relative;
+  width: 100%;
+  height: 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  overflow: hidden;
+}
+
+.stat-bar::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(124, 58, 237, 0.25), transparent 70%);
+  opacity: 0.8;
+  mix-blend-mode: screen;
+}
+
+.stat-bar-fill {
+  display: block;
+  height: 100%;
+  width: calc(var(--fill) * 100%);
+  border-radius: 999px;
+  background:
+    linear-gradient(120deg, rgba(236, 72, 153, 0.95) 0%, rgba(124, 58, 237, 1) 50%, rgba(59, 130, 246, 0.95) 100%),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0));
+  box-shadow:
+    0 0 18px rgba(139, 92, 246, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35);
+  position: relative;
+}
+
+.stat-bar-fill::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 0 18px rgba(255, 255, 255, 0.9);
+  transform: translateY(-50%);
 }
 
 .stat-label {
-  font-size: 0.8rem;
-  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.85rem;
+  color: rgba(226, 232, 240, 0.8);
   font-weight: 500;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin-top: 0.25rem;
-}
-
-.stat-divider {
-  width: 1px;
-  height: 40px;
-  background: linear-gradient(
-    to bottom,
-    transparent,
-    rgba(255, 255, 255, 0.2),
-    transparent
-  );
+  letter-spacing: 3px;
 }
 
 /* ===================================
@@ -1026,16 +1161,24 @@ onUnmounted(() => {
   }
 
   .hero-stats {
+    padding: 2.25rem 2.25rem;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 1.5rem;
-    padding: 1.5rem 2rem;
+  }
+
+  .stat-block {
+    padding: 1.6rem;
   }
 
   .stat-number {
-    font-size: 1.5rem;
+    font-size: 2.1rem;
   }
 
   .stat-icon {
-    font-size: 1.75rem;
+    font-size: 1.6rem;
   }
 }
 
@@ -1099,22 +1242,40 @@ onUnmounted(() => {
   }
 
   .hero-stats {
-    flex-direction: column;
-    gap: 1.5rem;
     padding: 2rem 1.75rem;
-    width: 100%;
-    max-width: 100%;
-    margin-bottom: 2.5rem;
+    margin-bottom: 2.75rem;
   }
-  
-  .stat-item {
-    width: 100%;
-    justify-content: center;
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
   }
-  
-  .stat-divider {
-    width: 100%;
-    height: 1px;
+
+  .stat-block {
+    padding: 1.5rem;
+    border-radius: 16px;
+  }
+
+  .stat-number {
+    font-size: 2rem;
+  }
+
+  .stat-meta {
+    align-items: center;
+    text-align: center;
+  }
+
+  .stat-subtext {
+    letter-spacing: 2.4px;
+  }
+
+  .stat-bar {
+    height: 11px;
+  }
+
+  .stat-bar-fill::after {
+    width: 12px;
+    height: 12px;
   }
 
   .tech-stack-preview {

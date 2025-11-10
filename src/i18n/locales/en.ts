@@ -24,15 +24,18 @@ const en = {
     stats: {
       experience: {
         number: '6+',
-        label: 'Years Experience'
+        label: 'Years Experience',
+        tag: 'Core Experience'
       },
       projects: {
         number: '50+',
-        label: 'Projects Delivered'
+        label: 'Projects Delivered',
+        tag: 'Projects Impact'
       },
       satisfaction: {
         number: '100%',
-        label: 'Innovator'
+        label: 'Innovator',
+        tag: 'Quality Index'
       }
     },
     poweredBy: 'Powered by',
